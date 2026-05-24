@@ -25,6 +25,7 @@ API_BASE = "https://fxmacrodata.com/api"
 SITE_URL = "https://fxmacrodata.com"
 DOCS_URL = "https://fxmacrodata.com/documentation"
 API_KEYS_URL = "https://fxmacrodata.com/api-management"
+SUBSCRIBE_URL = "https://fxmacrodata.com/subscribe"
 
 # Currencies available with a Professional API key (free = USD only)
 PRO_CURRENCIES = [
@@ -186,6 +187,69 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+st.markdown(
+        """
+        <style>
+            .stApp {
+                background: radial-gradient(circle at 5% 5%, #e0f2fe 0%, #f8fafc 35%, #ffffff 100%);
+            }
+            .fxmd-hero {
+                border: 1px solid rgba(148, 163, 184, 0.35);
+                border-radius: 18px;
+                padding: 1.15rem 1.2rem;
+                background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(3, 105, 161, 0.9));
+                color: #f8fafc;
+                margin-bottom: 0.75rem;
+            }
+            .fxmd-hero h2 {
+                margin: 0;
+                font-size: 1.55rem;
+                line-height: 1.25;
+                font-weight: 800;
+            }
+            .fxmd-hero p {
+                margin: 0.5rem 0 0;
+                color: #cbd5e1;
+            }
+            .fxmd-chip {
+                display: inline-block;
+                margin-right: 0.35rem;
+                margin-top: 0.6rem;
+                font-size: 0.72rem;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                font-weight: 700;
+                border-radius: 999px;
+                padding: 0.2rem 0.62rem;
+                background: rgba(148, 163, 184, 0.2);
+                border: 1px solid rgba(148, 163, 184, 0.45);
+                color: #e2e8f0;
+            }
+            .fxmd-chip-live {
+                background: rgba(16, 185, 129, 0.18);
+                border-color: rgba(16, 185, 129, 0.45);
+                color: #bbf7d0;
+            }
+            .fxmd-chip-upgrade {
+                background: rgba(250, 204, 21, 0.2);
+                border-color: rgba(250, 204, 21, 0.4);
+                color: #fef08a;
+            }
+            .fxmd-note {
+                border: 1px solid rgba(148, 163, 184, 0.35);
+                border-radius: 12px;
+                background: rgba(241, 245, 249, 0.85);
+                padding: 0.7rem 0.8rem;
+                font-size: 0.92rem;
+            }
+            [data-testid="stMetricValue"] {
+                font-weight: 800;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True,
+)
+
 # ---------------------------------------------------------------------------
 # Sidebar
 # ---------------------------------------------------------------------------
@@ -239,13 +303,34 @@ with st.sidebar:
 # Header
 # ---------------------------------------------------------------------------
 
-st.title("📊 Central Bank Rate Monitor")
 st.markdown(
-    "Explore macroeconomic indicators sourced directly from central banks and "
-    "statistical agencies via the **[FXMacroData API](https://fxmacrodata.com)**.\n\n"
-    "**USD announcement data is public** — no API key required.  "
-    f"[Get a Professional key]({API_KEYS_URL}) to unlock protected non-USD announcements."
+    f"""
+    <section class="fxmd-hero">
+      <h2>Central Bank Rate Monitor</h2>
+      <p>Analyze macro indicators across major currencies with point-in-time FXMacroData series.</p>
+      <span class="fxmd-chip fxmd-chip-live">USD data free</span>
+      <span class="fxmd-chip fxmd-chip-upgrade">Pro unlocks non-USD + COT + commodities</span>
+    </section>
+    """,
+    unsafe_allow_html=True,
 )
+st.markdown(
+    f"""
+    <div class="fxmd-note">
+      This app runs on the FXMacroData API. Start free with USD indicators and
+      <a href="{SUBSCRIBE_URL}" target="_blank">upgrade via Subscribe</a> for full coverage.
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+stat_a, stat_b, stat_c = st.columns(3)
+with stat_a:
+    st.metric("Supported currencies", "18")
+with stat_b:
+    st.metric("Indicator families", "40+")
+with stat_c:
+    st.metric("Starting paid plan", "$25/mo")
 st.divider()
 
 # ---------------------------------------------------------------------------
@@ -512,6 +597,7 @@ traders, quantitative analysts, and algorithmic trading teams.
 
 - 🌐 [FXMacroData Website]({SITE_URL})
 - 📖 [API Documentation]({DOCS_URL})
+- 💳 [Subscribe]({SUBSCRIBE_URL})
 - 🔑 [Get your API key]({API_KEYS_URL})
 
 ---
