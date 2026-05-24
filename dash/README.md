@@ -1,7 +1,8 @@
-# FXMacroData – FX Macro Heatmap (Plotly Dash)
+# FXMacroData – Policy Divergence Studio (Plotly Dash)
 
-A **Plotly Dash** example app that visualises macroeconomic indicator momentum
-across 18 currencies as a colour-coded heatmap, powered by the
+A **Plotly Dash** example app focused on two-country macro comparison.
+It tracks policy and macro divergence (spread, trend, volatility) and
+generates an analyst-style narrative, powered by the
 **[FXMacroData API](https://fxmacrodata.com)**.
 
 > **USD announcement data is public — no API key required.**  
@@ -10,14 +11,14 @@ across 18 currencies as a colour-coded heatmap, powered by the
 
 ---
 
-## What makes this different
+## What this app does
 
-| | This Dash app | Streamlit app |
-|---|---|---|
-| **Concept** | Macro momentum heatmap | Central bank rate monitor |
-| **Visualisation** | Colour-coded grid (all currencies × indicators at a glance) | Individual time-series line charts |
-| **Interaction** | Click any cell → time-series drills down inline | Linear scrolling dashboard |
-| **Deep Dive tab** | Sparkline grid for every indicator of a chosen currency | Multi-currency comparison chart |
+| Capability | Policy Divergence Studio |
+|---|---|
+| Core workflow | Compare Country A vs Country B on one macro indicator |
+| Main outputs | Spread level, spread trend, spread volatility |
+| Visuals | Dual-country line chart + spread area chart |
+| Decision support | Cross-indicator scoreboard + narrative summary |
 
 ---
 
@@ -25,9 +26,9 @@ across 18 currencies as a colour-coded heatmap, powered by the
 
 | Tab | What it shows | API key needed? |
 |---|---|---|
-| 🌡️ Macro Heatmap | Colour-coded momentum for every indicator × currency | USD only without key |
-| 📊 Deep Dive | Sparkline grid for all indicators of a chosen currency | USD only without key |
-| ℹ️ About | Feature overview and API links | No |
+| Divergence Lab | Two-country series + spread analytics | USD only without key |
+| Scoreboard | Indicator-by-indicator strength snapshot | USD only without key |
+| Narrative | Auto-generated regime summary | No |
 
 ---
 
@@ -51,9 +52,9 @@ Open <http://localhost:8050> in your browser.
    ```
    gunicorn app:server
    ```
-5. *(Optional)* Add your API key as an environment variable:
+5. Add your API key as an environment variable in Render:
    - Key: `FXMACRODATA_API_KEY`
-   - Value: your key
+   - Value: your `rnd_...` key from FXMacroData API management
    - Then read it in `app.py` with `os.getenv("FXMACRODATA_API_KEY", "")`.
 6. Click **Deploy** — a `*.onrender.com` URL is generated automatically.
 
