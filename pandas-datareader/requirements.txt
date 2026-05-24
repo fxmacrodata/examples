@@ -1,0 +1,9 @@
+# Core dependencies (no pandas-datareader needed for standalone readers)
+pandas>=2.0.0
+requests>=2.31.0
+
+# Optional: pandas-datareader integration (requires pandas < 3.0)
+# pandas-datareader 0.10.0 is not compatible with pandas 3.x.
+# To use the register() / DataReader interface, pin an older pandas:
+#   pip install "pandas<3" pandas-datareader
+# pandas-datareader>=0.10.0

@@ -1,0 +1,6 @@
+name = "fxmacrodata-edge-starter"
+main = "src/index.js"
+compatibility_date = "2026-05-24"
+
+[observability]
+enabled = true

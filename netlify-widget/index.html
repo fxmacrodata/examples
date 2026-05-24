@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>FXMacroData Netlify Widget</title>
+    <style>
+      body { margin: 0; font-family: ui-sans-serif, system-ui, sans-serif; background: #f8fafc; color: #0f172a; }
+      .wrap { max-width: 940px; margin: 28px auto; padding: 0 16px; }
+      .hero { border-radius: 12px; background: linear-gradient(120deg, #0c4a6e, #065f46); color: white; padding: 20px; }
+      .hero a { color: #99f6e4; font-weight: 700; }
+      .card { margin-top: 16px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb; }
+      .muted { color: #64748b; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hero">
+        <h1>FXMacroData Netlify Widget</h1>
+        <p>Static marketing page + serverless function for live USD macro snippets.</p>
+        <a href="https://fxmacrodata.com/subscribe" target="_blank" rel="noopener noreferrer">Subscribe for full endpoint access</a>
+      </div>
+
+      <div class="card">
+        <h2>Latest USD macro values</h2>
+        <p class="muted">Fetched from /.netlify/functions/usd-latest</p>
+        <div id="state">Loading...</div>
+      </div>
+    </div>
+
+    <script>
+      const state = document.getElementById('state');
+      fetch('/api/usd-latest')
+        .then((r) => r.json())
+        .then((payload) => {
+          const rows = (payload && payload.data) ? payload.data : [];
+          if (!rows.length) {
+            state.textContent = 'No data returned.';
+            return;
+          }
+
+          const body = rows.slice(0, 15).map((row) =>
+            `<tr><td>${row.indicator || '—'}</td><td>${row.val ?? '—'}</td><td>${row.announcement_datetime || '—'}</td></tr>`
+          ).join('');
+
+          state.innerHTML = `
+            <table>
+              <thead><tr><th>Indicator</th><th>Value</th><th>Announcement</th></tr></thead>
+              <tbody>${body}</tbody>
+            </table>
+          `;
+        })
+        .catch((err) => {
+          state.textContent = `Request failed: ${err.message}`;
+        });
+    </script>
+  </body>
+</html>

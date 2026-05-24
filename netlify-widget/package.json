@@ -1,0 +1,12 @@
+{
+  "name": "fxmacrodata-netlify-widget",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "node -e \"const fs=require('fs');fs.mkdirSync('dist',{recursive:true});fs.copyFileSync('index.html','dist/index.html');\""
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.34.1"
+  }
+}

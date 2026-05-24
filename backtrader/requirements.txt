@@ -1,0 +1,4 @@
+backtrader>=1.9.78.123
+pandas>=2.0.0
+requests>=2.31.0
+matplotlib>=3.5.0

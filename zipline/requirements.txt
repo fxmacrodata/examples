@@ -1,0 +1,5 @@
+zipline-reloaded>=3.0.4
+pandas>=2.0.0
+numpy>=1.24.0
+requests>=2.31.0
+exchange-calendars>=4.2.0
