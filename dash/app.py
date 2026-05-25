@@ -29,6 +29,7 @@ API_MANAGEMENT_URL = "https://fxmacrodata.com/api-management"
 DOCS_URL = "https://fxmacrodata.com/documentation"
 
 FREE_CURRENCY = "USD"
+FREE_PAIR_DEFAULT = "USD / USD"
 PRO_CURRENCIES = [
     "EUR",
     "GBP",
@@ -60,7 +61,7 @@ INDICATORS = [
 LOWER_BETTER = {"unemployment"}
 
 DEFAULT_A = "USD"
-DEFAULT_B = "EUR"
+DEFAULT_B = "USD"
 DEFAULT_INDICATOR = "policy_rate"
 DEFAULT_YEARS = 5
 
@@ -175,11 +176,11 @@ def blank_figure(title: str) -> go.Figure:
     fig = go.Figure()
     fig.update_layout(
         title=title,
-        template="plotly_white",
+        template="plotly_dark",
         height=360,
         margin=dict(l=30, r=20, t=58, b=34),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="#f8fafc",
+        paper_bgcolor="#07111f",
+        plot_bgcolor="#07111f",
         xaxis=dict(visible=False),
         yaxis=dict(visible=False),
         annotations=[
@@ -190,7 +191,7 @@ def blank_figure(title: str) -> go.Figure:
                 xref="paper",
                 yref="paper",
                 showarrow=False,
-                font=dict(size=14, color="#64748b"),
+                font=dict(size=14, color="#cbd5e1"),
             )
         ],
     )
@@ -205,8 +206,10 @@ def series_figure(df: pd.DataFrame, label_a: str, label_b: str, indicator_label:
             y=df["val_a"],
             mode="lines+markers",
             name=label_a,
-            line=dict(color="#0369a1", width=3),
+            line=dict(color="#38bdf8", width=3.5),
             marker=dict(size=6),
+            fill="tozeroy",
+            fillcolor="rgba(56, 189, 248, 0.08)",
         )
     )
     fig.add_trace(
@@ -215,20 +218,22 @@ def series_figure(df: pd.DataFrame, label_a: str, label_b: str, indicator_label:
             y=df["val_b"],
             mode="lines+markers",
             name=label_b,
-            line=dict(color="#0f766e", width=3),
+            line=dict(color="#34d399", width=3.5),
             marker=dict(size=6),
+            fill="tozeroy",
+            fillcolor="rgba(52, 211, 153, 0.08)",
         )
     )
     fig.update_layout(
         title=f"{indicator_label}: {label_a} vs {label_b}",
-        template="plotly_white",
+        template="plotly_dark",
         height=380,
         margin=dict(l=40, r=24, t=58, b=40),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="#f8fafc",
-        legend=dict(orientation="h", y=1.09, x=0),
-        xaxis=dict(title="Date", gridcolor="#e2e8f0"),
-        yaxis=dict(title=f"Value ({unit})" if unit else "Value", gridcolor="#e2e8f0"),
+        paper_bgcolor="#07111f",
+        plot_bgcolor="#07111f",
+        legend=dict(orientation="h", y=1.09, x=0, bgcolor="rgba(7,17,31,0.1)"),
+        xaxis=dict(title="Date", gridcolor="rgba(148,163,184,0.14)", zeroline=False),
+        yaxis=dict(title=f"Value ({unit})" if unit else "Value", gridcolor="rgba(148,163,184,0.14)", zeroline=False),
     )
     return fig
 
@@ -251,15 +256,24 @@ def spread_figure(df: pd.DataFrame, label_a: str, label_b: str, indicator_label:
     fig.add_hline(y=0, line_dash="dot", line_color="#334155", line_width=1.2)
     fig.update_layout(
         title=f"Spread Trend ({indicator_label})",
-        template="plotly_white",
+        template="plotly_dark",
         height=340,
         margin=dict(l=40, r=24, t=58, b=40),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="#f8fafc",
-        xaxis=dict(title="Date", gridcolor="#e2e8f0"),
-        yaxis=dict(title="Spread", gridcolor="#e2e8f0"),
+        paper_bgcolor="#07111f",
+        plot_bgcolor="#07111f",
+        xaxis=dict(title="Date", gridcolor="rgba(148,163,184,0.14)", zeroline=False),
+        yaxis=dict(title="Spread", gridcolor="rgba(148,163,184,0.14)", zeroline=False),
     )
     return fig
+
+
+def auto_prompt(currency_a: str, currency_b: str, indicator: str) -> str:
+    if currency_a == FREE_CURRENCY and currency_b == FREE_CURRENCY:
+        return "Auto-loaded in free mode. Select a Professional key and switch Country B to compare non-USD indicators."
+    if currency_a == currency_b:
+        return "Both sides are set to the same currency, so the spread is zero. Choose a different Country B to compare divergence."
+    indicator_label = next((label for key, label, _ in INDICATORS if key == indicator), indicator)
+    return f"Auto-loaded with {indicator_label} for {currency_a} vs {currency_b}."
 
 
 def build_scoreboard(currency_a: str, currency_b: str, api_key: Optional[str], years: int) -> list[dict]:
@@ -339,11 +353,11 @@ app.layout = dbc.Container(
             children=[
                 html.Div(
                     style={
-                        "background": "linear-gradient(120deg, #0f172a 0%, #0c4a6e 55%, #115e59 100%)",
+                        "background": "linear-gradient(120deg, #07111f 0%, #0f2742 54%, #0e4a57 100%)",
                         "borderRadius": "22px",
                         "padding": "26px 24px",
                         "color": "#f8fafc",
-                        "boxShadow": "0 18px 46px rgba(15, 23, 42, 0.32)",
+                        "boxShadow": "0 18px 46px rgba(15, 23, 42, 0.46)",
                         "marginBottom": "18px",
                     },
                     children=[
@@ -456,7 +470,7 @@ app.layout = dbc.Container(
                         dbc.Col(
                             md=4,
                             children=dbc.Button(
-                                "Run Divergence Analysis",
+                                "Refresh Analysis",
                                 id="run-btn",
                                 n_clicks=0,
                                 className="w-100",
@@ -472,6 +486,18 @@ app.layout = dbc.Container(
                     ],
                 ),
                 html.Div(id="status-box", style={"marginTop": "14px"}),
+                html.Div(
+                    auto_prompt(DEFAULT_A, DEFAULT_B, DEFAULT_INDICATOR),
+                    style={
+                        "marginTop": "10px",
+                        "padding": "10px 12px",
+                        "borderRadius": "12px",
+                        "background": "rgba(15, 118, 110, 0.08)",
+                        "border": "1px solid rgba(15, 118, 110, 0.18)",
+                        "color": "#0f172a",
+                        "fontSize": "0.93rem",
+                    },
+                ),
                 dbc.Row(
                     className="g-3 mt-1",
                     children=[
@@ -551,11 +577,11 @@ app.layout = dbc.Container(
     Output("scoreboard", "data"),
     Output("narrative", "children"),
     Input("run-btn", "n_clicks"),
-    State("currency-a", "value"),
-    State("currency-b", "value"),
-    State("indicator", "value"),
-    State("lookback-years", "value"),
-    State("api-key", "value"),
+    Input("currency-a", "value"),
+    Input("currency-b", "value"),
+    Input("indicator", "value"),
+    Input("lookback-years", "value"),
+    Input("api-key", "value"),
 )
 def run_analysis(
     _n_clicks: int,
@@ -625,8 +651,21 @@ def run_analysis(
         className="mb-0",
     )
 
+    prompt_box = html.Div(
+        auto_prompt(currency_a, currency_b, indicator),
+        style={
+            "marginBottom": "12px",
+            "padding": "10px 12px",
+            "borderRadius": "12px",
+            "background": "rgba(56, 189, 248, 0.08)",
+            "border": "1px solid rgba(56, 189, 248, 0.18)",
+            "color": "#0f172a",
+            "fontSize": "0.93rem",
+        },
+    )
+
     return (
-        alert,
+        html.Div([prompt_box, alert]),
         format_metric(last_spread, indicator_unit),
         f"{trend:+.2f}",
         f"{volatility:.2f}",
