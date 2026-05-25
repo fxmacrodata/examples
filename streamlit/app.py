@@ -72,6 +72,14 @@ INDICATOR_UNITS = {
     "trade_balance": "",
 }
 
+PLACEHOLDER_KEY_MARKERS = (
+    "PASTE_",
+    "YOUR_REAL_KEY",
+    "REPLACE",
+    "DUMMY",
+    "EXAMPLE",
+)
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -131,6 +139,32 @@ def fetch_indicator(
     df["date"] = pd.to_datetime(df["date"])
     df = df.sort_values("date")
     return df, None
+
+
+@st.cache_data(ttl=300, show_spinner=False)
+def validate_api_key(api_key: str) -> tuple[bool, str]:
+    """Validate a Professional API key against a protected non-USD endpoint."""
+    if not api_key:
+        return False, "empty"
+
+    upper_key = api_key.upper()
+    if any(marker in upper_key for marker in PLACEHOLDER_KEY_MARKERS):
+        return False, "placeholder"
+
+    try:
+        resp = requests.get(
+            f"{API_BASE}/v1/announcements/eur/policy_rate",
+            params={"api_key": api_key},
+            timeout=12,
+        )
+    except requests.exceptions.RequestException:
+        return False, "network"
+
+    if resp.status_code == 200:
+        return True, "valid"
+    if resp.status_code in (401, 403):
+        return False, "invalid"
+    return False, "unknown"
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -367,10 +401,7 @@ st.markdown(
 # ---------------------------------------------------------------------------
 
 with st.sidebar:
-    st.image(
-        "https://fxmacrodata.com/static/images/logo.png",
-        use_container_width=True,
-    )
+    st.markdown("### 🌐 FXMacroData")
     st.markdown(
         f"**[FXMacroData]({SITE_URL})** — institutional-grade macro & FX data API."
     )
@@ -391,15 +422,29 @@ with st.sidebar:
             "Enter your Professional key to unlock protected non-USD announcements."
         ),
     )
-    api_key: Optional[str] = api_key_input.strip() or None
+    api_key_candidate: Optional[str] = api_key_input.strip() or None
+    api_key: Optional[str] = None
 
-    if api_key:
-        st.success("API key set ✅")
-    else:
+    if not api_key_candidate:
         st.info(
             f"No key?  [Get free access]({API_KEYS_URL}) — "
             "USD announcement data is public."
         )
+    else:
+        is_valid, reason = validate_api_key(api_key_candidate)
+        if is_valid:
+            api_key = api_key_candidate
+            st.success("API key validated ✅")
+        elif reason == "placeholder":
+            st.warning("This looks like placeholder text, not a real API key.")
+        elif reason == "invalid":
+            st.error("Invalid API key. Please check your key and try again.")
+        elif reason == "network":
+            api_key = api_key_candidate
+            st.info("Key entered, but validation is temporarily unavailable.")
+        else:
+            api_key = api_key_candidate
+            st.info("Key entered, but validation status is unknown.")
 
     st.divider()
     st.subheader("⚙️ Settings")
