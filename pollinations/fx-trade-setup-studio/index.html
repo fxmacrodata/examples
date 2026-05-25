@@ -29,6 +29,16 @@
     <main class="grid">
       <section class="panel form-panel">
         <h2>Setup Inputs</h2>
+        <div class="auth-row">
+          <div>
+            <p class="auth-title">Pollinations Account</p>
+            <p class="auth-sub" id="authStatus">Not connected (guest mode)</p>
+          </div>
+          <div class="auth-actions">
+            <button id="connectBtn" class="primary" type="button">Connect</button>
+            <button id="disconnectBtn" class="ghost" type="button">Disconnect</button>
+          </div>
+        </div>
         <div class="field-grid">
           <label>Pair
             <select id="pair">

@@ -6,6 +6,9 @@ const styleHints = {
   "Calm Swing": "soft gradients, balanced composition, medium contrast, modern trading infographic style",
 };
 
+const POLLINATIONS_CLIENT_ID = "pk_zhpd0jwsCKfNyGQO";
+const SESSION_KEY = "pollinations_user_api_key";
+
 function byId(id) {
   return document.getElementById(id);
 }
@@ -34,6 +37,43 @@ function buildUrl(prompt, seed, aspect) {
   const [width, height] = aspect.split("x");
   const encoded = encodeURIComponent(prompt);
   return `https://image.pollinations.ai/p/${encoded}?width=${width}&height=${height}&seed=${seed}&nologo=true`;
+}
+
+function getAuthLink() {
+  const params = new URLSearchParams({
+    client_id: POLLINATIONS_CLIENT_ID,
+    redirect_uri: `${window.location.origin}${window.location.pathname}`,
+    scope: "usage",
+    budget: "10",
+    expiry: "30",
+    state: "fx-trade-setup-studio",
+  });
+  return `https://enter.pollinations.ai/authorize?${params.toString()}`;
+}
+
+function persistApiKeyFromHash() {
+  const hash = new URLSearchParams(window.location.hash.slice(1));
+  const apiKey = hash.get("api_key");
+  const err = hash.get("error");
+  if (err) {
+    updateAuthStatus(`Authorization failed: ${err}`);
+  }
+  if (apiKey && apiKey.startsWith("sk_")) {
+    sessionStorage.setItem(SESSION_KEY, apiKey);
+    updateAuthStatus("Connected: using your Pollinations account");
+  }
+  if (apiKey || err) {
+    history.replaceState({}, "", window.location.pathname + window.location.search);
+  }
+}
+
+function getUserApiKey() {
+  return sessionStorage.getItem(SESSION_KEY) || "";
+}
+
+function updateAuthStatus(message) {
+  const node = byId("authStatus");
+  if (node) node.textContent = message;
 }
 
 function collectInputs() {
@@ -96,14 +136,41 @@ function generate() {
   const data = collectInputs();
   const prompt = buildPrompt(data);
   const seeds = makeSeeds(data.variants);
-  const urls = seeds.map((seed) => buildUrl(prompt, seed, data.aspect));
+  const apiKey = getUserApiKey();
+  const urls = seeds.map((seed) => {
+    let url = buildUrl(prompt, seed, data.aspect);
+    if (apiKey) {
+      url += `&api_key=${encodeURIComponent(apiKey)}`;
+    }
+    return url;
+  });
 
   byId("promptPreview").textContent = prompt;
   renderMetrics(data);
   renderGallery(urls, seeds);
 }
 
+function setupAuthUi() {
+  persistApiKeyFromHash();
+  const current = getUserApiKey();
+  if (current) {
+    updateAuthStatus("Connected: using your Pollinations account");
+  } else {
+    updateAuthStatus("Not connected (guest mode)");
+  }
+
+  byId("connectBtn").addEventListener("click", () => {
+    window.location.href = getAuthLink();
+  });
+
+  byId("disconnectBtn").addEventListener("click", () => {
+    sessionStorage.removeItem(SESSION_KEY);
+    updateAuthStatus("Not connected (guest mode)");
+  });
+}
+
 byId("generateBtn").addEventListener("click", generate);
 byId("randomBtn").addEventListener("click", generate);
+setupAuthUi();
 
 generate();
