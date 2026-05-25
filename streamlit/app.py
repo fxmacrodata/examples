@@ -9,6 +9,7 @@ Pro tier:    Non-USD announcement indicators — requires a Professional API key
 """
 
 import datetime
+import os
 from typing import Optional
 
 import pandas as pd
@@ -132,6 +133,48 @@ def fetch_indicator(
     return df, None
 
 
+@st.cache_data(ttl=300, show_spinner=False)
+def fetch_calendar(
+    currency: str,
+    api_key: Optional[str],
+) -> tuple[Optional[pd.DataFrame], Optional[str]]:
+    """Fetch upcoming macro releases from the FXMacroData calendar endpoint."""
+    params: dict = {}
+    if api_key:
+        params["api_key"] = api_key
+
+    try:
+        resp = requests.get(
+            f"{API_BASE}/v1/calendar/{currency.lower()}",
+            params=params,
+            timeout=15,
+        )
+    except requests.exceptions.RequestException as exc:
+        return None, f"Network error: {exc}"
+
+    if resp.status_code == 401:
+        return None, "API key required for this currency calendar."
+    if resp.status_code == 403:
+        return None, "Invalid API key for calendar endpoint."
+    if not resp.ok:
+        return None, f"Calendar API error {resp.status_code}: {resp.text[:200]}"
+
+    payload = resp.json()
+    rows = payload.get("data", [])
+    if not rows:
+        return None, "No upcoming releases returned."
+
+    df = pd.DataFrame(rows)
+    if "announcement_datetime" in df.columns:
+        df["announcement_datetime"] = pd.to_datetime(
+            df["announcement_datetime"], errors="coerce", utc=True
+        )
+        df = df.dropna(subset=["announcement_datetime"]).sort_values(
+            "announcement_datetime"
+        )
+    return df, None
+
+
 def _plot_series(
     df: pd.DataFrame,
     title: str,
@@ -147,6 +190,8 @@ def _plot_series(
             name=title,
             line=dict(color=color, width=2),
             marker=dict(size=4),
+            fill="tozeroy",
+            fillcolor="rgba(125, 211, 252, 0.08)",
             hovertemplate="%{x|%b %Y}: <b>%{y}</b><extra></extra>",
         )
     )
@@ -154,10 +199,45 @@ def _plot_series(
         title=title,
         xaxis_title="Date",
         yaxis_title=y_label,
-        template="plotly_white",
+        template="plotly_dark",
+        paper_bgcolor="#0b1220",
+        plot_bgcolor="#0b1220",
+        font=dict(color="#e2e8f0"),
         hovermode="x unified",
         margin=dict(l=40, r=20, t=50, b=40),
         height=380,
+    )
+    return fig
+
+
+def _plot_release_timeline(df: pd.DataFrame, title: str) -> go.Figure:
+    plot_df = df.copy()
+    plot_df = plot_df.head(15)
+    if "release" not in plot_df.columns:
+        plot_df["release"] = "Macro Release"
+
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=plot_df["announcement_datetime"],
+            y=plot_df["release"],
+            mode="markers+lines",
+            marker=dict(size=11, color="#38bdf8", symbol="diamond"),
+            line=dict(color="#0ea5e9", width=2),
+            hovertemplate="%{y}<br>%{x|%Y-%m-%d %H:%M UTC}<extra></extra>",
+            name="Releases",
+        )
+    )
+    fig.update_layout(
+        title=title,
+        xaxis_title="Announcement Datetime (UTC)",
+        yaxis_title="Release",
+        template="plotly_dark",
+        paper_bgcolor="#0b1220",
+        plot_bgcolor="#0b1220",
+        font=dict(color="#e2e8f0"),
+        margin=dict(l=40, r=20, t=60, b=40),
+        height=420,
     )
     return fig
 
@@ -190,8 +270,12 @@ st.set_page_config(
 st.markdown(
         """
         <style>
+            :root {
+                color-scheme: dark;
+            }
             .stApp {
-                background: radial-gradient(circle at 5% 5%, #e0f2fe 0%, #f8fafc 35%, #ffffff 100%);
+                background: radial-gradient(circle at 5% 5%, #0f172a 0%, #020617 45%, #000000 100%);
+                color: #e5e7eb;
             }
             .fxmd-hero {
                 border: 1px solid rgba(148, 163, 184, 0.35);
@@ -238,12 +322,40 @@ st.markdown(
             .fxmd-note {
                 border: 1px solid rgba(148, 163, 184, 0.35);
                 border-radius: 12px;
-                background: rgba(241, 245, 249, 0.85);
+                background: rgba(15, 23, 42, 0.72);
                 padding: 0.7rem 0.8rem;
                 font-size: 0.92rem;
+                color: #e2e8f0;
+            }
+            .fxmd-note a {
+                color: #7dd3fc;
+            }
+            .stTabs [data-baseweb="tab-list"] button {
+                color: #cbd5e1;
+            }
+            .stTabs [aria-selected="true"] {
+                color: #f8fafc !important;
+            }
+            [data-testid="stMetricLabel"],
+            [data-testid="stMetricDelta"] {
+                color: #93c5fd !important;
             }
             [data-testid="stMetricValue"] {
                 font-weight: 800;
+                color: #f8fafc !important;
+                text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+            }
+            [data-testid="stSidebar"] {
+                background: linear-gradient(180deg, #0b1220 0%, #0a1428 60%, #071226 100%);
+            }
+            [data-testid="stSidebar"] * {
+                color: #e2e8f0;
+            }
+            [data-testid="stSelectbox"] label,
+            [data-testid="stMultiSelect"] label,
+            [data-testid="stTextInput"] label,
+            [data-testid="stSlider"] label {
+                color: #cbd5e1 !important;
             }
         </style>
         """,
@@ -264,10 +376,15 @@ with st.sidebar:
     )
     st.divider()
 
+    api_key_seed = (
+        st.secrets.get("FXMACRODATA_API_KEY", "") or os.getenv("FXMACRODATA_API_KEY", "")
+    ).strip()
+
     st.subheader("🔑 API Key")
     api_key_input = st.text_input(
         "Professional API key",
         type="password",
+        value=api_key_seed,
         placeholder="Paste your API key here",
         help=(
             "USD announcement data is public — no key needed.  "
@@ -357,6 +474,8 @@ with tab_usd:
         ("unemployment", "#FB8C00"),
     ]
 
+    usd_snapshot_rows: list[dict] = []
+
     for indicator_key, color in free_indicators:
         indicator_label = INDICATORS[indicator_key]
         unit = INDICATOR_UNITS[indicator_key]
@@ -388,6 +507,16 @@ with tab_usd:
                 delta=f"{delta:+.2f} {unit}".strip() if delta is not None else None,
             )
 
+        if latest is not None:
+            usd_snapshot_rows.append(
+                {
+                    "Indicator": indicator_label,
+                    "Latest": float(latest),
+                    "Unit": unit,
+                    "Delta": round(float(delta), 4) if delta is not None else None,
+                }
+            )
+
         st.divider()
 
     # Additional USD indicators (expandable)
@@ -417,6 +546,32 @@ with tab_usd:
             fig = _plot_series(df, f"USD {indicator_label}", unit, color)
             st.plotly_chart(fig, use_container_width=True)
             st.divider()
+
+    if usd_snapshot_rows:
+        st.subheader("USD Macro Snapshot")
+        snapshot_df = pd.DataFrame(usd_snapshot_rows).sort_values("Indicator")
+        st.dataframe(snapshot_df, use_container_width=True, hide_index=True)
+
+    st.subheader("Upcoming USD Releases")
+    with st.spinner("Loading USD release calendar…"):
+        calendar_df, calendar_err = fetch_calendar("USD", None)
+
+    if calendar_err:
+        st.info(calendar_err)
+    elif calendar_df is not None and not calendar_df.empty:
+        timeline_fig = _plot_release_timeline(
+            calendar_df,
+            "Upcoming USD Announcements (Calendar Feed)",
+        )
+        st.plotly_chart(timeline_fig, use_container_width=True)
+
+        preview_cols = [
+            col
+            for col in ["announcement_datetime", "release", "currency"]
+            if col in calendar_df.columns
+        ]
+        if preview_cols:
+            st.dataframe(calendar_df[preview_cols].head(12), use_container_width=True)
 
 # ── Tab 2: Multi-Currency (pro) ───────────────────────────────────────────────
 
@@ -521,7 +676,10 @@ with tab_multi:
                 title=f"{indicator_label} — Multi-Currency Comparison",
                 xaxis_title="Date",
                 yaxis_title=unit or indicator_label,
-                template="plotly_white",
+                template="plotly_dark",
+                paper_bgcolor="#0b1220",
+                plot_bgcolor="#0b1220",
+                font=dict(color="#e2e8f0"),
                 hovermode="x unified",
                 legend=dict(
                     orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
@@ -558,10 +716,40 @@ with tab_multi:
                 )
 
             if summary_rows:
-                st.dataframe(
-                    pd.DataFrame(summary_rows).set_index("Currency"),
-                    use_container_width=True,
-                )
+                summary_df = pd.DataFrame(summary_rows).set_index("Currency")
+                st.dataframe(summary_df, use_container_width=True)
+
+                latest_col = f"Latest {unit or 'Value'}"
+                if latest_col in summary_df.columns:
+                    rank_df = (
+                        summary_df.reset_index()[["Currency", latest_col]]
+                        .dropna()
+                        .sort_values(latest_col, ascending=False)
+                    )
+                    rank_fig = go.Figure(
+                        go.Bar(
+                            x=rank_df[latest_col],
+                            y=rank_df["Currency"],
+                            orientation="h",
+                            marker=dict(
+                                color="#22d3ee",
+                                line=dict(color="#0f172a", width=1),
+                            ),
+                            hovertemplate="%{y}: <b>%{x}</b><extra></extra>",
+                        )
+                    )
+                    rank_fig.update_layout(
+                        title=f"{indicator_label} Ranking (Latest)",
+                        xaxis_title=unit or indicator_label,
+                        yaxis_title="Currency",
+                        template="plotly_dark",
+                        paper_bgcolor="#0b1220",
+                        plot_bgcolor="#0b1220",
+                        font=dict(color="#e2e8f0"),
+                        margin=dict(l=40, r=20, t=60, b=40),
+                        height=380,
+                    )
+                    st.plotly_chart(rank_fig, use_container_width=True)
 
 # ── Tab 3: About ─────────────────────────────────────────────────────────────
 

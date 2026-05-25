@@ -13,7 +13,7 @@ A Streamlit example app that visualizes macroeconomic indicators from the
 
 | Tab | What it shows | API key needed? |
 |---|---|---|
-| 🇺🇸 USD Dashboard | Policy rate, inflation, GDP, unemployment (+ more) | No |
+| 🇺🇸 USD Dashboard | Policy rate, inflation, GDP, unemployment, snapshot table, release timeline | No |
 | 🌍 Multi-Currency | Compare any indicator across up to 18 currencies | Yes (for non-USD) |
 | ℹ️ About | Feature overview and API links | No |
 
@@ -64,6 +64,7 @@ Open <http://localhost:8501> in your browser.
 |---|---|---|
 | `GET /v1/announcements/usd/{indicator}` | Free | USD macro indicator history |
 | `GET /v1/announcements/{currency}/{indicator}` | API key | Non-USD indicator history |
+| `GET /v1/calendar/usd` | Free | Upcoming USD macro release schedule |
 
 Full API reference: <https://fxmacrodata.com/documentation>
 
