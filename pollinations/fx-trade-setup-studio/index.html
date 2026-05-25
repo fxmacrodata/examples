@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FX Trade Setup Studio | Built with pollinations.ai</title>
+    <meta
+      name="description"
+      content="Generate premium FX trade setup cards for social, journals, and community posts using pollinations.ai."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-inner">
+        <p class="eyebrow">Built with <a href="https://pollinations.ai" target="_blank" rel="noreferrer">pollinations.ai</a></p>
+        <h1>FX Trade Setup Studio</h1>
+        <p class="subtitle">
+          Turn structured trade inputs into polished, social-ready visual setup cards.
+        </p>
+        <div class="chips">
+          <span>FX-first workflow</span>
+          <span>No backend required</span>
+          <span>Pollinations-powered</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="panel form-panel">
+        <h2>Setup Inputs</h2>
+        <div class="field-grid">
+          <label>Pair
+            <select id="pair">
+              <option>EUR/USD</option>
+              <option>GBP/USD</option>
+              <option>USD/JPY</option>
+              <option>AUD/USD</option>
+              <option>USD/CAD</option>
+              <option>XAU/USD</option>
+            </select>
+          </label>
+
+          <label>Direction
+            <select id="direction">
+              <option>Long</option>
+              <option>Short</option>
+            </select>
+          </label>
+
+          <label>Timeframe
+            <select id="timeframe">
+              <option>M15</option>
+              <option>H1</option>
+              <option selected>H4</option>
+              <option>D1</option>
+              <option>W1</option>
+            </select>
+          </label>
+
+          <label>Style
+            <select id="style">
+              <option>Institutional Brief</option>
+              <option>Macro War Room</option>
+              <option>Minimal Journal</option>
+              <option>High-Volatility</option>
+              <option>Calm Swing</option>
+            </select>
+          </label>
+
+          <label>Entry
+            <input id="entry" type="number" value="1.089" step="0.0001" />
+          </label>
+
+          <label>Stop
+            <input id="stop" type="number" value="1.083" step="0.0001" />
+          </label>
+
+          <label>Target 1
+            <input id="tp1" type="number" value="1.096" step="0.0001" />
+          </label>
+
+          <label>Target 2
+            <input id="tp2" type="number" value="1.1015" step="0.0001" />
+          </label>
+
+          <label>Aspect
+            <select id="aspect">
+              <option value="1080x1080">Square 1080x1080</option>
+              <option value="1280x720">Landscape 1280x720</option>
+              <option value="1080x1350">Portrait 1080x1350</option>
+            </select>
+          </label>
+
+          <label>Variants
+            <input id="variants" type="number" min="1" max="8" value="4" step="1" />
+          </label>
+
+          <label class="wide">Thesis
+            <textarea id="thesis" rows="3">US disinflation momentum and softer payroll prints support a weaker USD into the next FOMC window.</textarea>
+          </label>
+
+          <label class="wide">Catalyst
+            <input id="catalyst" type="text" value="US CPI release + central bank speaker cycle" />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="generateBtn" class="primary">Generate Setup Cards</button>
+          <button id="randomBtn" class="ghost">Randomize Seed Set</button>
+        </div>
+
+        <div class="metrics" id="metrics"></div>
+
+        <details>
+          <summary>Prompt preview</summary>
+          <pre id="promptPreview"></pre>
+        </details>
+      </section>
+
+      <section class="panel output-panel">
+        <h2>Generated Cards</h2>
+        <p class="note">Tip: Click an image to open full size and save.</p>
+        <div id="gallery" class="gallery"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        Created for the Pollinations app ecosystem. Explore more at
+        <a href="https://pollinations.ai/apps" target="_blank" rel="noreferrer">pollinations.ai/apps</a>.
+      </p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

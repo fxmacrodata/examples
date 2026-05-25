@@ -21,6 +21,7 @@ to a paid plan at:
 | App | Framework | Hosted on | Live URL |
 |---|---|---|---|
 | Central Bank Rate Monitor | Streamlit | Streamlit Community Cloud | _deploy link_ |
+| FX Trade Setup Studio | Web (Vanilla JS) | GitHub Pages / Netlify / Vercel Static | _deploy link_ |
 | FX & Macro Explorer | Gradio | Hugging Face Spaces | _deploy link_ |
 | FX Macro Heatmap | Plotly Dash | Render | _deploy link_ |
 | Macro Intelligence Dashboard | HoloViz Panel | Hugging Face Spaces | _deploy link_ |
@@ -171,6 +172,9 @@ cd vercel && npm install && npm run dev
 
 # Netlify app
 cd netlify-widget && npm install && npm run dev
+
+# FX Trade Setup Studio (static app)
+cd pollinations/fx-trade-setup-studio && python -m http.server 8080
 
 # Cloudflare Worker
 cd cloudflare-worker && npm install && npm run dev
