@@ -321,7 +321,7 @@ def build_scoreboard(currency_a: str, currency_b: str, api_key: Optional[str], y
 
 app = Dash(
     __name__,
-    external_stylesheets=[dbc.themes.BOOTSTRAP],
+    external_stylesheets=[dbc.themes.CYBORG],
     title="FXMacroData Policy Divergence Studio",
     meta_tags=[
         {"name": "viewport", "content": "width=device-width, initial-scale=1"},
@@ -343,29 +343,169 @@ app.layout = dbc.Container(
     fluid=True,
     style={
         "minHeight": "100vh",
-        "background": "radial-gradient(circle at 12% 8%, #dbeafe 0%, #f8fafc 35%, #ecfeff 100%)",
+        "background": "radial-gradient(circle at 12% 8%, #07111f 0%, #050b14 46%, #03060c 100%)",
         "padding": "20px 16px 40px",
-        "fontFamily": "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+        "fontFamily": "Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+        "color": "#e5eefb",
     },
     children=[
+        html.Style(
+            """
+            .dash-card {
+                border: 1px solid rgba(148,163,184,0.16) !important;
+                border-radius: 18px !important;
+                background: linear-gradient(180deg, rgba(15,23,42,0.88) 0%, rgba(8,15,28,0.92) 100%) !important;
+                box-shadow: 0 18px 44px rgba(0,0,0,0.28) !important;
+            }
+            .dash-section-title {
+                margin: 0;
+                font-size: 0.78rem;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                color: #86b8ff;
+                font-weight: 700;
+            }
+            .dash-section-copy {
+                margin: 6px 0 0;
+                color: #cbd5e1;
+                font-size: 0.96rem;
+            }
+            .dash-chip {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                border-radius: 999px;
+                padding: 5px 10px;
+                font-size: 0.72rem;
+                font-weight: 700;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                color: #d7e7ff;
+                background: rgba(59,130,246,0.12);
+                border: 1px solid rgba(59,130,246,0.24);
+            }
+            .dash-chip-green {
+                background: rgba(16,185,129,0.12);
+                border-color: rgba(16,185,129,0.25);
+                color: #c6f6e5;
+            }
+            .dash-chip-amber {
+                background: rgba(245,158,11,0.12);
+                border-color: rgba(245,158,11,0.25);
+                color: #fde68a;
+            }
+            .summary-card {
+                border-radius: 18px !important;
+                background: linear-gradient(180deg, rgba(14,23,39,0.92) 0%, rgba(10,17,31,0.96) 100%) !important;
+                border: 1px solid rgba(148,163,184,0.14) !important;
+                box-shadow: 0 14px 30px rgba(0,0,0,0.18) !important;
+            }
+            .summary-label {
+                font-size: 0.72rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: #8ea6c7;
+                margin-bottom: 6px;
+            }
+            .summary-value {
+                margin: 0;
+                color: #f8fafc;
+                font-size: 1.45rem;
+                font-weight: 800;
+            }
+            .summary-note {
+                margin-top: 5px;
+                color: #93c5fd;
+                font-size: 0.84rem;
+            }
+            .control-label {
+                color: #dbe8ff;
+                font-weight: 700;
+                letter-spacing: 0.02em;
+            }
+            .dash-table .dash-spreadsheet-container .dash-spreadsheet-inner table {
+                border-radius: 16px;
+                overflow: hidden;
+            }
+            """
+        ),
         dbc.Container(
             style={"maxWidth": "1240px"},
             children=[
                 html.Div(
                     style={
-                        "background": "linear-gradient(120deg, #07111f 0%, #0f2742 54%, #0e4a57 100%)",
+                        "background": "linear-gradient(120deg, #08111f 0%, #112b4d 48%, #0e5a63 100%)",
                         "borderRadius": "22px",
                         "padding": "26px 24px",
                         "color": "#f8fafc",
-                        "boxShadow": "0 18px 46px rgba(15, 23, 42, 0.46)",
+                        "boxShadow": "0 22px 52px rgba(2, 6, 23, 0.48)",
                         "marginBottom": "18px",
                     },
                     children=[
-                        html.P("FXMacroData Dash Example", style={"opacity": 0.85, "marginBottom": "6px", "letterSpacing": "0.08em", "textTransform": "uppercase", "fontSize": "12px", "fontWeight": 700}),
-                        html.H1("Policy Divergence Studio", style={"margin": "0 0 8px", "fontSize": "2.1rem", "fontWeight": 800}),
+                        html.Div(
+                            [
+                                html.Span("FXMacroData Dash Example", className="dash-chip dash-chip-green"),
+                                html.Span("Auto-loaded", className="dash-chip"),
+                                html.Span("USD free mode", className="dash-chip dash-chip-amber"),
+                            ],
+                            style={"display": "flex", "gap": "10px", "flexWrap": "wrap", "marginBottom": "14px"},
+                        ),
+                        html.H1(
+                            "Policy Divergence Studio",
+                            style={"margin": "0 0 8px", "fontSize": "clamp(2rem, 4vw, 3rem)", "fontWeight": 900, "letterSpacing": "-0.03em"},
+                        ),
                         html.P(
-                            "Compare two countries on one macro indicator, track spread momentum, and generate a fast regime narrative.",
-                            style={"margin": 0, "fontSize": "1.02rem", "maxWidth": "880px", "opacity": 0.94},
+                            "A trading-desk view of macro divergence. Compare two countries, trace spread momentum, and read the regime in one glance.",
+                            style={"margin": 0, "fontSize": "1.04rem", "maxWidth": "920px", "opacity": 0.92, "color": "#d8e6ff"},
+                        ),
+                    ],
+                ),
+                dbc.Row(
+                    className="g-3 mb-3",
+                    children=[
+                        dbc.Col(
+                            md=3,
+                            children=dbc.Card(
+                                dbc.CardBody([
+                                    html.Div("Live mode", className="summary-label"),
+                                    html.H3("Auto-refresh", className="summary-value"),
+                                    html.Div("Charts render on load and on every control change.", className="summary-note"),
+                                ]),
+                                className="summary-card",
+                            ),
+                        ),
+                        dbc.Col(
+                            md=3,
+                            children=dbc.Card(
+                                dbc.CardBody([
+                                    html.Div("Coverage", className="summary-label"),
+                                    html.H3("18 currencies", className="summary-value"),
+                                    html.Div("USD free, non-USD with API key.", className="summary-note"),
+                                ]),
+                                className="summary-card",
+                            ),
+                        ),
+                        dbc.Col(
+                            md=3,
+                            children=dbc.Card(
+                                dbc.CardBody([
+                                    html.Div("Workflow", className="summary-label"),
+                                    html.H3("Spread + narrative", className="summary-value"),
+                                    html.Div("Useful for quickly spotting divergence regimes.", className="summary-note"),
+                                ]),
+                                className="summary-card",
+                            ),
+                        ),
+                        dbc.Col(
+                            md=3,
+                            children=dbc.Card(
+                                dbc.CardBody([
+                                    html.Div("Latency", className="summary-label"),
+                                    html.H3("Cached 5 min", className="summary-value"),
+                                    html.Div("Keeps the page responsive while you explore.", className="summary-note"),
+                                ]),
+                                className="summary-card",
+                            ),
                         ),
                     ],
                 ),
@@ -377,11 +517,11 @@ app.layout = dbc.Container(
                             children=dbc.Card(
                                 dbc.CardBody(
                                     [
-                                        html.Label("Country A", className="fw-semibold mb-1"),
-                                        dcc.Dropdown(ALL_CURRENCIES, DEFAULT_A, id="currency-a", clearable=False),
+                                        html.Label("Country A", className="control-label mb-1"),
+                                        dcc.Dropdown(ALL_CURRENCIES, DEFAULT_A, id="currency-a", clearable=False, className="dash-control"),
                                     ]
                                 ),
-                                style={"border": "1px solid #cbd5e1", "borderRadius": "14px", "height": "100%"},
+                                className="dash-card",
                             ),
                         ),
                         dbc.Col(
@@ -389,11 +529,11 @@ app.layout = dbc.Container(
                             children=dbc.Card(
                                 dbc.CardBody(
                                     [
-                                        html.Label("Country B", className="fw-semibold mb-1"),
-                                        dcc.Dropdown(ALL_CURRENCIES, DEFAULT_B, id="currency-b", clearable=False),
+                                        html.Label("Country B", className="control-label mb-1"),
+                                        dcc.Dropdown(ALL_CURRENCIES, DEFAULT_B, id="currency-b", clearable=False, className="dash-control"),
                                     ]
                                 ),
-                                style={"border": "1px solid #cbd5e1", "borderRadius": "14px", "height": "100%"},
+                                className="dash-card",
                             ),
                         ),
                         dbc.Col(
@@ -401,16 +541,17 @@ app.layout = dbc.Container(
                             children=dbc.Card(
                                 dbc.CardBody(
                                     [
-                                        html.Label("Indicator", className="fw-semibold mb-1"),
+                                        html.Label("Indicator", className="control-label mb-1"),
                                         dcc.Dropdown(
                                             [{"label": label, "value": key} for key, label, _ in INDICATORS],
                                             DEFAULT_INDICATOR,
                                             id="indicator",
                                             clearable=False,
+                                            className="dash-control",
                                         ),
                                     ]
                                 ),
-                                style={"border": "1px solid #cbd5e1", "borderRadius": "14px", "height": "100%"},
+                                className="dash-card",
                             ),
                         ),
                         dbc.Col(
@@ -418,7 +559,7 @@ app.layout = dbc.Container(
                             children=dbc.Card(
                                 dbc.CardBody(
                                     [
-                                        html.Label("Lookback", className="fw-semibold mb-1"),
+                                        html.Label("Lookback", className="control-label mb-1"),
                                         dcc.Dropdown(
                                             options=[
                                                 {"label": "2 years", "value": 2},
@@ -429,10 +570,11 @@ app.layout = dbc.Container(
                                             value=DEFAULT_YEARS,
                                             id="lookback-years",
                                             clearable=False,
+                                            className="dash-control",
                                         ),
                                     ]
                                 ),
-                                style={"border": "1px solid #cbd5e1", "borderRadius": "14px", "height": "100%"},
+                                className="dash-card",
                             ),
                         ),
                     ],
@@ -446,8 +588,8 @@ app.layout = dbc.Container(
                                 dbc.CardBody(
                                     [
                                         html.Div(className="d-flex justify-content-between align-items-center mb-2", children=[
-                                            html.Label("Professional API key (optional for USD)", className="fw-semibold mb-0"),
-                                            html.A("Get key", href=API_MANAGEMENT_URL, target="_blank", style={"fontSize": "0.88rem"}),
+                                            html.Label("Professional API key (optional for USD)", className="control-label mb-0"),
+                                            html.A("Get key", href=API_MANAGEMENT_URL, target="_blank", style={"fontSize": "0.88rem", "color": "#93c5fd"}),
                                         ]),
                                         dcc.Input(
                                             id="api-key",
@@ -458,13 +600,15 @@ app.layout = dbc.Container(
                                                 "width": "100%",
                                                 "padding": "11px 12px",
                                                 "borderRadius": "10px",
-                                                "border": "1px solid #94a3b8",
+                                                "border": "1px solid rgba(148,163,184,0.32)",
+                                                "background": "rgba(2,6,23,0.92)",
+                                                "color": "#f8fafc",
                                                 "fontFamily": "monospace",
                                             },
                                         ),
                                     ]
                                 ),
-                                style={"border": "1px solid #cbd5e1", "borderRadius": "14px"},
+                                className="dash-card",
                             ),
                         ),
                         dbc.Col(
@@ -479,7 +623,9 @@ app.layout = dbc.Container(
                                     "fontWeight": 700,
                                     "borderRadius": "12px",
                                     "border": "none",
-                                    "background": "linear-gradient(90deg, #0284c7 0%, #0f766e 100%)",
+                                    "background": "linear-gradient(90deg, #38bdf8 0%, #14b8a6 100%)",
+                                    "color": "#04111f",
+                                    "boxShadow": "0 14px 30px rgba(20,184,166,0.24)",
                                 },
                             ),
                         ),
@@ -490,27 +636,27 @@ app.layout = dbc.Container(
                     auto_prompt(DEFAULT_A, DEFAULT_B, DEFAULT_INDICATOR),
                     style={
                         "marginTop": "10px",
-                        "padding": "10px 12px",
+                        "padding": "12px 14px",
                         "borderRadius": "12px",
-                        "background": "rgba(15, 118, 110, 0.08)",
-                        "border": "1px solid rgba(15, 118, 110, 0.18)",
-                        "color": "#0f172a",
+                        "background": "rgba(8, 15, 28, 0.76)",
+                        "border": "1px solid rgba(148,163,184,0.18)",
+                        "color": "#dbeafe",
                         "fontSize": "0.93rem",
                     },
                 ),
                 dbc.Row(
                     className="g-3 mt-1",
                     children=[
-                        dbc.Col(md=4, children=dbc.Card(dbc.CardBody([html.Div("Current spread", className="text-uppercase text-secondary", style={"fontSize": "11px", "letterSpacing": "0.08em"}), html.H3("-", id="metric-spread", className="mb-0")]), style={"borderRadius": "14px", "border": "1px solid #cbd5e1"})),
-                        dbc.Col(md=4, children=dbc.Card(dbc.CardBody([html.Div("3-point trend", className="text-uppercase text-secondary", style={"fontSize": "11px", "letterSpacing": "0.08em"}), html.H3("-", id="metric-trend", className="mb-0")]), style={"borderRadius": "14px", "border": "1px solid #cbd5e1"})),
-                        dbc.Col(md=4, children=dbc.Card(dbc.CardBody([html.Div("Spread volatility", className="text-uppercase text-secondary", style={"fontSize": "11px", "letterSpacing": "0.08em"}), html.H3("-", id="metric-vol", className="mb-0")]), style={"borderRadius": "14px", "border": "1px solid #cbd5e1"})),
+                        dbc.Col(md=4, children=dbc.Card(dbc.CardBody([html.Div("Current spread", className="summary-label"), html.H3("-", id="metric-spread", className="summary-value"), html.Div("Latest spread across the overlap window.", className="summary-note")]), className="summary-card")),
+                        dbc.Col(md=4, children=dbc.Card(dbc.CardBody([html.Div("3-point trend", className="summary-label"), html.H3("-", id="metric-trend", className="summary-value"), html.Div("Slope of the most recent spread samples.", className="summary-note")]), className="summary-card")),
+                        dbc.Col(md=4, children=dbc.Card(dbc.CardBody([html.Div("Spread volatility", className="summary-label"), html.H3("-", id="metric-vol", className="summary-value"), html.Div("Std dev of the spread over the selected range.", className="summary-note")]), className="summary-card")),
                     ],
                 ),
                 dbc.Row(
                     className="g-3 mt-1",
                     children=[
-                        dbc.Col(md=7, children=dbc.Card(dbc.CardBody(dcc.Graph(id="series-chart", figure=blank_figure("Country comparison"), config={"displayModeBar": False})), style={"borderRadius": "14px", "border": "1px solid #cbd5e1"})),
-                        dbc.Col(md=5, children=dbc.Card(dbc.CardBody(dcc.Graph(id="spread-chart", figure=blank_figure("Spread trend"), config={"displayModeBar": False})), style={"borderRadius": "14px", "border": "1px solid #cbd5e1"})),
+                        dbc.Col(md=7, children=dbc.Card(dbc.CardBody([html.Div([html.Div("Country comparison", className="dash-section-title"), html.P("Two-country series with shared time axis and a filled trend treatment.", className="dash-section-copy")], className="mb-2"), dcc.Graph(id="series-chart", figure=blank_figure("Country comparison"), config={"displayModeBar": False})]), className="dash-card")),
+                        dbc.Col(md=5, children=dbc.Card(dbc.CardBody([html.Div([html.Div("Spread trend", className="dash-section-title"), html.P("The divergence line, shaded for quick regime scanning.", className="dash-section-copy")], className="mb-2"), dcc.Graph(id="spread-chart", figure=blank_figure("Spread trend"), config={"displayModeBar": False})]), className="dash-card")),
                     ],
                 ),
                 dbc.Row(
@@ -521,26 +667,34 @@ app.layout = dbc.Container(
                             children=dbc.Card(
                                 dbc.CardBody(
                                     [
-                                        html.H5("Cross-Indicator Scoreboard", className="mb-3"),
+                                        html.Div([html.Div("Cross-Indicator Scoreboard", className="dash-section-title"), html.P("A terminal-style quick read across policy, inflation, unemployment, and PMI.", className="dash-section-copy")], className="mb-3"),
                                         dash_table.DataTable(
                                             id="scoreboard",
                                             columns=[],
                                             data=[],
                                             style_header={
-                                                "backgroundColor": "#0f172a",
-                                                "color": "white",
+                                                "backgroundColor": "#08111f",
+                                                "color": "#e5eefb",
                                                 "fontWeight": "700",
+                                                "border": "1px solid rgba(148,163,184,0.16)",
                                             },
                                             style_cell={
                                                 "padding": "9px",
                                                 "fontSize": "13px",
-                                                "border": "1px solid #e2e8f0",
+                                                "border": "1px solid rgba(148,163,184,0.12)",
+                                                "backgroundColor": "#0a1322",
+                                                "color": "#dbeafe",
                                             },
-                                            style_data={"backgroundColor": "#f8fafc", "color": "#1e293b"},
+                                            style_data={"backgroundColor": "#0a1322", "color": "#dbeafe"},
+                                            style_table={"overflowX": "auto"},
+                                            style_data_conditional=[
+                                                {"if": {"filter_query": '{signal} contains "stronger"'}, "color": "#86efac", "fontWeight": "700"},
+                                                {"if": {"filter_query": '{signal} contains "Data unavailable"'}, "color": "#fbbf24"},
+                                            ],
                                         ),
                                     ]
                                 ),
-                                style={"borderRadius": "14px", "border": "1px solid #cbd5e1"},
+                                className="dash-card",
                             ),
                         ),
                         dbc.Col(
@@ -548,14 +702,14 @@ app.layout = dbc.Container(
                             children=dbc.Card(
                                 dbc.CardBody(
                                     [
-                                        html.H5("Narrative", className="mb-3"),
-                                        html.Div(id="narrative", style={"lineHeight": "1.6", "color": "#334155"}),
+                                        html.Div([html.Div("Narrative", className="dash-section-title"), html.P("One-line read for traders who want the gist fast.", className="dash-section-copy")], className="mb-3"),
+                                        html.Div(id="narrative", style={"lineHeight": "1.6", "color": "#dbeafe", "fontSize": "0.98rem"}),
                                         html.Hr(),
-                                        html.P("Documentation", className="mb-1 fw-semibold"),
-                                        html.A("API docs", href=DOCS_URL, target="_blank"),
+                                        html.P("Documentation", className="mb-1 fw-semibold", style={"color": "#cbd5e1"}),
+                                        html.A("API docs", href=DOCS_URL, target="_blank", style={"color": "#7dd3fc"}),
                                     ]
                                 ),
-                                style={"borderRadius": "14px", "border": "1px solid #cbd5e1", "height": "100%"},
+                                className="dash-card",
                             ),
                         ),
                     ],
@@ -657,10 +811,11 @@ def run_analysis(
             "marginBottom": "12px",
             "padding": "10px 12px",
             "borderRadius": "12px",
-            "background": "rgba(56, 189, 248, 0.08)",
-            "border": "1px solid rgba(56, 189, 248, 0.18)",
-            "color": "#0f172a",
+            "background": "linear-gradient(135deg, rgba(8,15,28,0.96) 0%, rgba(11,24,43,0.96) 100%)",
+            "border": "1px solid rgba(125,211,252,0.16)",
+            "color": "#dbeafe",
             "fontSize": "0.93rem",
+            "boxShadow": "0 10px 24px rgba(0,0,0,0.16)",
         },
     )
 
