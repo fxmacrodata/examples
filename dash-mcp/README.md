@@ -7,8 +7,10 @@ assistant to the same app through `/_mcp`.
 This example is based on the FXMacroData Public Macro Monitor workflow:
 
 - FX spot chart for a selected pair
+- Indexed comparison chart for selected pairs
 - Cross-pair correlation matrix
 - Rolling risk-regime chart
+- Shared Dash state through `dcc.Store`
 - MCP-enabled Dash callback
 - Custom MCP snapshot tool
 
@@ -39,6 +41,11 @@ export FXMACRODATA_API_KEY=YOUR_API_KEY
 The app also accepts `FXMD_API_KEY` as a fallback for local compatibility, but
 `FXMACRODATA_API_KEY` is the preferred examples-repo variable.
 
+If no API key is configured, the app uses deterministic demo data so you can
+see the dashboard, callbacks, and MCP endpoint working before adding credentials.
+Set `FXMACRODATA_DEMO_FALLBACK=0` if you want missing or unavailable API data to
+render as an empty state instead.
+
 ---
 
 ## Run locally
@@ -58,6 +65,9 @@ The MCP endpoint is:
 ```text
 http://127.0.0.1:8050/_mcp
 ```
+
+Dash debug mode is off by default so screenshots and demos do not show the
+development toolbar. To enable debug mode locally, set `DASH_DEBUG=1`.
 
 ---
 
@@ -85,6 +95,10 @@ Try prompts such as:
 - "Switch the dashboard to USD/JPY and explain the risk-regime chart."
 - "Compare EUR/USD with GBP/USD and summarize the correlation view."
 - "Call `get_public_macro_monitor_snapshot` for EUR_USD with a 6M window."
+
+The custom MCP tool returns a compact non-sensitive snapshot: latest value,
+window return, recent volatility, risk regime, comparison pairs, source status,
+and observation count.
 
 ---
 

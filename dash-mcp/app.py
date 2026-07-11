@@ -2,7 +2,7 @@
 FXMacroData - Conversational Dash MCP Monitor
 =============================================
 
-Dash 4.3+ example that exposes a small FX dashboard through Dash MCP.
+Dash 4.3+ example that exposes a compact FX dashboard through Dash MCP.
 
 Run locally:
     pip install -r requirements.txt
@@ -15,18 +15,34 @@ http://127.0.0.1:8050/_mcp.
 
 from __future__ import annotations
 
+import math
 import os
 from datetime import datetime, timedelta, timezone
+from inspect import signature
 from typing import Any
 
 import pandas as pd
 import plotly.graph_objects as go
 import requests
 from dash import Dash, Input, Output, dcc, html
-from dash.mcp import configure_mcp_server, mcp_enabled
+
+try:
+    from dash.mcp import configure_mcp_server, mcp_enabled
+except ImportError:  # Dash MCP is available in Dash 4.3+.
+    configure_mcp_server = None
+
+    def mcp_enabled(*decorator_args: Any, **_decorator_kwargs: Any) -> Any:
+        if decorator_args and callable(decorator_args[0]):
+            return decorator_args[0]
+
+        def _identity(func: Any) -> Any:
+            return func
+
+        return _identity
+
 
 API_BASE = (
-    os.getenv("PUBLIC_DASH_API_BASE_URL", "").strip()
+    os.getenv("PUBLIC_DASH_API_BASE_URL", "").strip().rstrip("/")
     or "https://api.fxmacrodata.com/v1"
 )
 DOCS_URL = "https://fxmacrodata.com/documentation"
@@ -44,13 +60,52 @@ PAIR_OPTIONS = [
     {"label": code.replace("_", "/"), "value": code}
     for code in PAIR_CODES
 ]
-
 WINDOW_DAYS = {"3m": 90, "6m": 180, "1y": 365}
 WINDOW_OPTIONS = [
     {"label": label, "value": key}
     for label, key in [("3M", "3m"), ("6M", "6m"), ("1Y", "1y")]
 ]
+
+DEFAULT_PAIR = "EUR_USD"
 DEFAULT_COMPARE = ["GBP_USD", "USD_JPY"]
+DEFAULT_WINDOW = "3m"
+DEMO_FALLBACK_ENABLED = os.getenv("FXMACRODATA_DEMO_FALLBACK", "1").lower() not in {
+    "0",
+    "false",
+    "no",
+}
+
+GRAPH_CONFIG = {
+    "displaylogo": False,
+    "responsive": True,
+    "modeBarButtonsToRemove": ["select2d", "lasso2d"],
+}
+
+FIGURE_COLORS = {
+    "text": "#0f172a",
+    "muted": "#64748b",
+    "grid": "rgba(148, 163, 184, 0.24)",
+    "panel": "#ffffff",
+    "plot": "#ffffff",
+    "blue": "#2563eb",
+    "cyan": "#0891b2",
+    "teal": "#0f766e",
+    "amber": "#d97706",
+    "red": "#dc2626",
+    "purple": "#7c3aed",
+}
+
+_DASH_SUPPORTS_MCP = "enable_mcp" in signature(Dash).parameters
+
+
+def _dash_mcp_constructor_options() -> dict[str, bool]:
+    return {"enable_mcp": True} if _DASH_SUPPORTS_MCP else {}
+
+
+def _dash_mcp_callback_options() -> dict[str, bool]:
+    if _DASH_SUPPORTS_MCP and configure_mcp_server is not None:
+        return {"mcp_enabled": True, "mcp_expose_docstring": True}
+    return {}
 
 
 def api_key() -> str:
@@ -69,7 +124,7 @@ def build_api_params(params: dict[str, Any]) -> dict[str, Any]:
     return clean
 
 
-def fetch_json(path: str, **params: Any) -> dict[str, Any]:
+def fetch_json(path: str, **params: Any) -> tuple[dict[str, Any], str]:
     try:
         response = requests.get(
             f"{API_BASE}{path}",
@@ -78,23 +133,115 @@ def fetch_json(path: str, **params: Any) -> dict[str, Any]:
             timeout=20,
         )
     except requests.RequestException:
-        return {}
+        return {}, "network_error"
 
+    if response.status_code in {401, 403}:
+        return {}, "auth_required"
+    if response.status_code == 404:
+        return {}, "no_data"
     if not response.ok:
-        return {}
-    payload = response.json()
-    return payload if isinstance(payload, dict) else {}
+        return {}, "api_error"
+
+    try:
+        payload = response.json()
+    except ValueError:
+        return {}, "api_error"
+    return (payload, "ok") if isinstance(payload, dict) else ({}, "api_error")
 
 
-def load_forex_series(pair: str, window_key: str) -> list[dict[str, Any]]:
-    base, quote = PAIR_CODES.get(pair, PAIR_CODES["EUR_USD"])
-    days = WINDOW_DAYS.get(window_key, 90)
+def sanitize_pair(pair: str | None) -> str:
+    return pair if pair in PAIR_CODES else DEFAULT_PAIR
+
+
+def sanitize_window(window_key: str | None) -> str:
+    return window_key if window_key in WINDOW_DAYS else DEFAULT_WINDOW
+
+
+def sanitize_compare_pairs(
+    selected_pair: str,
+    compare_pairs: list[str] | str | None,
+) -> list[str]:
+    if isinstance(compare_pairs, str):
+        compare_values = [compare_pairs]
+    else:
+        compare_values = list(compare_pairs or [])
+
+    safe: list[str] = []
+    for code in compare_values:
+        if code in PAIR_CODES and code != selected_pair and code not in safe:
+            safe.append(code)
+
+    if not safe:
+        safe = [code for code in DEFAULT_COMPARE if code != selected_pair]
+    return safe[:4]
+
+
+def format_pair(pair: str) -> str:
+    return pair.replace("_", "/")
+
+
+def format_number(value: float | None, digits: int = 2) -> str:
+    if value is None or not math.isfinite(float(value)):
+        return "n/a"
+    return f"{float(value):,.{digits}f}"
+
+
+def format_percent(value: float | None, digits: int = 2) -> str:
+    if value is None or not math.isfinite(float(value)):
+        return "n/a"
+    return f"{float(value):+,.{digits}f}%"
+
+
+def format_utc_timestamp(value: str | None) -> str:
+    if not value:
+        return "n/a"
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return value
+    return parsed.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+
+def generate_demo_series(pair: str, window_key: str) -> list[dict[str, Any]]:
+    """Create deterministic sample data so the example is useful without a key."""
+    days = WINDOW_DAYS.get(window_key, WINDOW_DAYS[DEFAULT_WINDOW])
+    base_level = {
+        "EUR_USD": 1.08,
+        "GBP_USD": 1.27,
+        "USD_JPY": 154.0,
+        "AUD_USD": 0.66,
+        "USD_CAD": 1.36,
+    }.get(pair, 1.0)
+    pair_seed = sum(ord(char) for char in pair)
+    end_date = datetime.now(timezone.utc).date()
+    rows: list[dict[str, Any]] = []
+
+    for idx in range(days + 1):
+        ds = end_date - timedelta(days=days - idx)
+        drift = 1 + ((idx / max(days, 1)) - 0.5) * ((pair_seed % 13) - 6) / 350
+        cycle = 1 + math.sin((idx + pair_seed % 17) / 8.5) * 0.009
+        shorter_cycle = 1 + math.sin((idx + pair_seed % 7) / 2.9) * 0.0025
+        val = base_level * drift * cycle * shorter_cycle
+        rows.append({"date": ds.isoformat(), "val": round(val, 5)})
+    return rows
+
+
+def load_forex_series(pair: str, window_key: str) -> tuple[list[dict[str, Any]], str]:
+    safe_pair = sanitize_pair(pair)
+    safe_window = sanitize_window(window_key)
+
+    if not api_key() and DEMO_FALLBACK_ENABLED:
+        return generate_demo_series(safe_pair, safe_window), "demo"
+
+    base, quote = PAIR_CODES[safe_pair]
+    days = WINDOW_DAYS[safe_window]
     end_date = datetime.now(timezone.utc).date()
     start_date = end_date - timedelta(days=days)
     rows: list[dict[str, Any]] = []
+    status = "no_data"
 
-    for offset in range(0, 300, 100):
-        payload = fetch_json(
+    for offset in range(0, 500, 100):
+        payload, status = fetch_json(
             f"/forex/{base.lower()}/{quote.lower()}",
             start_date=start_date.isoformat(),
             end_date=end_date.isoformat(),
@@ -110,44 +257,188 @@ def load_forex_series(pair: str, window_key: str) -> list[dict[str, Any]]:
                 rows.append({"date": row["date"], "val": float(row["val"])})
             except (KeyError, TypeError, ValueError):
                 continue
+
         if len(data) < 100:
             break
 
-    return sorted(rows, key=lambda item: item["date"])
+    if rows:
+        sorted_rows = sorted(rows, key=lambda item: item["date"])
+        return sorted_rows, "live"
+
+    if DEMO_FALLBACK_ENABLED:
+        return generate_demo_series(safe_pair, safe_window), f"demo_{status}"
+    return [], status
+
+
+def frame_from_rows(rows: list[dict[str, Any]]) -> pd.DataFrame:
+    if not rows:
+        return pd.DataFrame(columns=["date", "val"])
+    frame = pd.DataFrame(rows).dropna()
+    frame["date"] = pd.to_datetime(frame["date"])
+    frame["val"] = pd.to_numeric(frame["val"], errors="coerce")
+    return frame.dropna(subset=["date", "val"]).sort_values("date").drop_duplicates("date")
 
 
 def return_series(rows: list[dict[str, Any]]) -> pd.Series:
-    if len(rows) < 2:
+    frame = frame_from_rows(rows)
+    if len(frame) < 2:
         return pd.Series(dtype="float64")
-    frame = pd.DataFrame(rows).dropna()
-    frame["date"] = pd.to_datetime(frame["date"])
-    frame = frame.sort_values("date").drop_duplicates("date")
-    frame["return"] = frame["val"].pct_change()
-    clean = frame.dropna(subset=["return"])
-    return clean.set_index("date")["return"]
+    returns = frame.set_index("date")["val"].pct_change().dropna()
+    return returns.astype("float64")
 
 
-def build_context_metrics(
+def indexed_series(rows: list[dict[str, Any]]) -> pd.DataFrame:
+    frame = frame_from_rows(rows)
+    if frame.empty:
+        return frame
+    first = float(frame.iloc[0]["val"])
+    if first == 0:
+        frame["indexed"] = None
+    else:
+        frame["indexed"] = frame["val"] / first * 100
+    return frame
+
+
+def source_label(statuses: dict[str, str]) -> str:
+    values = set(statuses.values())
+    if values == {"live"}:
+        return "Live FXMacroData API"
+    if values and all(value == "demo" for value in values):
+        return "Demo sample"
+    if any(value.startswith("demo_") for value in values):
+        return "Demo fallback"
+    return "Mixed source"
+
+
+def risk_regime(annualized_vol_pct: float | None) -> str:
+    if annualized_vol_pct is None:
+        return "insufficient"
+    if annualized_vol_pct >= 12:
+        return "elevated"
+    if annualized_vol_pct >= 8:
+        return "watch"
+    return "normal"
+
+
+def build_metrics(
     pair: str,
     compare_pairs: list[str],
     window_key: str,
+    series_map: dict[str, list[dict[str, Any]]],
+    statuses: dict[str, str],
 ) -> dict[str, Any]:
-    rows = load_forex_series(pair, window_key)
+    rows = series_map.get(pair, [])
+    frame = frame_from_rows(rows)
     returns = return_series(rows)
-    latest = rows[-1]["val"] if rows else None
-    first = rows[0]["val"] if rows else None
-    total_return = (latest / first - 1) if latest and first else None
-    avg_abs_return = returns.abs().tail(20).mean() if not returns.empty else None
-    risk = "elevated" if avg_abs_return and avg_abs_return > 0.006 else "normal"
-    return {
+
+    metrics: dict[str, Any] = {
         "pair": pair,
-        "window": window_key,
-        "latest": round(latest, 5) if latest is not None else None,
-        "return_pct": round(total_return * 100, 2) if total_return else None,
-        "observations": len(rows),
+        "pair_label": format_pair(pair),
         "compare_pairs": compare_pairs,
-        "risk_regime": risk,
+        "compare_labels": [format_pair(code) for code in compare_pairs],
+        "window": window_key,
+        "window_label": window_key.upper(),
+        "source": source_label(statuses),
+        "source_statuses": statuses,
         "api_key_configured": bool(api_key()),
+        "observations": int(len(frame)),
+        "status": "ok" if len(frame) >= 2 else "insufficient_data",
+    }
+
+    if len(frame) < 2 or returns.empty:
+        metrics.update(
+            {
+                "latest": None,
+                "latest_date": None,
+                "first_date": None,
+                "window_return_pct": None,
+                "daily_vol_pct": None,
+                "annualized_vol_pct": None,
+                "momentum_20d_pct": None,
+                "risk_regime": "insufficient",
+            }
+        )
+        return metrics
+
+    latest = float(frame.iloc[-1]["val"])
+    first = float(frame.iloc[0]["val"])
+    window_return_pct = ((latest / first) - 1) * 100 if first else None
+    daily_vol_pct = float(returns.std() * 100) if len(returns) > 1 else None
+    recent_returns = returns.tail(20)
+    annualized_vol_pct = (
+        float(recent_returns.std() * math.sqrt(252) * 100)
+        if len(recent_returns) > 1
+        else None
+    )
+    if len(frame) >= 21:
+        base_20d = float(frame.iloc[-21]["val"])
+        momentum_20d_pct = ((latest / base_20d) - 1) * 100 if base_20d else None
+    else:
+        momentum_20d_pct = window_return_pct
+
+    metrics.update(
+        {
+            "latest": latest,
+            "latest_date": str(frame.iloc[-1]["date"].date()),
+            "first_date": str(frame.iloc[0]["date"].date()),
+            "window_return_pct": window_return_pct,
+            "daily_vol_pct": daily_vol_pct,
+            "annualized_vol_pct": annualized_vol_pct,
+            "momentum_20d_pct": momentum_20d_pct,
+            "risk_regime": risk_regime(annualized_vol_pct),
+        }
+    )
+    return metrics
+
+
+def build_monitor_state(
+    pair: str | None,
+    compare_pairs: list[str] | str | None,
+    window_key: str | None,
+) -> dict[str, Any]:
+    safe_pair = sanitize_pair(pair)
+    safe_window = sanitize_window(window_key)
+    safe_compare = sanitize_compare_pairs(safe_pair, compare_pairs)
+    selected = [safe_pair] + safe_compare
+    series_map: dict[str, list[dict[str, Any]]] = {}
+    statuses: dict[str, str] = {}
+
+    for code in selected:
+        rows, status = load_forex_series(code, safe_window)
+        series_map[code] = rows
+        statuses[code] = status
+
+    metrics = build_metrics(safe_pair, safe_compare, safe_window, series_map, statuses)
+    state = {
+        "pair": safe_pair,
+        "compare_pairs": safe_compare,
+        "window": safe_window,
+        "series": series_map,
+        "metrics": metrics,
+        "updated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+    }
+    state["summary"] = build_market_note(metrics)
+    return state
+
+
+def chart_layout(title: str, subtitle: str | None = None, height: int = 420) -> dict[str, Any]:
+    title_text = f"{title}<br><span style='font-size:13px;color:{FIGURE_COLORS['muted']}'>{subtitle}</span>" if subtitle else title
+    return {
+        "title": {"text": title_text, "x": 0.0, "xanchor": "left"},
+        "height": height,
+        "template": "plotly_white",
+        "paper_bgcolor": FIGURE_COLORS["panel"],
+        "plot_bgcolor": FIGURE_COLORS["plot"],
+        "font": {"color": FIGURE_COLORS["text"], "family": "Inter, Segoe UI, Arial, sans-serif"},
+        "margin": {"l": 58, "r": 24, "t": 72, "b": 48},
+        "legend": {
+            "orientation": "h",
+            "yanchor": "bottom",
+            "y": 1.02,
+            "xanchor": "right",
+            "x": 1,
+        },
+        "hovermode": "x unified",
     }
 
 
@@ -160,64 +451,135 @@ def empty_figure(title: str, message: str) -> go.Figure:
         xref="paper",
         yref="paper",
         showarrow=False,
-        font={"size": 15, "color": "#475569"},
+        align="center",
+        font={"size": 15, "color": FIGURE_COLORS["muted"]},
     )
-    fig.update_layout(
-        title=title,
-        height=420,
-        template="plotly_white",
-        paper_bgcolor="#ffffff",
-        plot_bgcolor="#ffffff",
-        margin={"l": 40, "r": 24, "t": 58, "b": 40},
-    )
+    fig.update_layout(**chart_layout(title))
     fig.update_xaxes(visible=False)
     fig.update_yaxes(visible=False)
     return fig
 
 
-def build_spot_figure(rows: list[dict[str, Any]], pair: str) -> go.Figure:
-    title = f"{pair.replace('_', '/')} Spot"
-    if not rows:
-        return empty_figure(
-            title,
-            "No FX spot data is available. Add FXMACRODATA_API_KEY to load protected FX history.",
-        )
-    frame = pd.DataFrame(rows)
-    fig = go.Figure(
-        go.Scatter(
-            x=frame["date"],
-            y=frame["val"],
-            mode="lines",
-            line={"color": "#0ea5e9", "width": 3},
-            name=pair.replace("_", "/"),
-        )
+def style_axes(fig: go.Figure, y_title: str | None = None) -> go.Figure:
+    fig.update_xaxes(
+        gridcolor=FIGURE_COLORS["grid"],
+        zeroline=False,
+        showline=True,
+        linecolor="rgba(148, 163, 184, 0.5)",
     )
-    fig.update_layout(
-        title=title,
-        height=420,
-        template="plotly_white",
-        margin={"l": 56, "r": 24, "t": 58, "b": 44},
-        xaxis_title="Date",
-        yaxis_title="Spot rate",
+    fig.update_yaxes(
+        title=y_title,
+        gridcolor=FIGURE_COLORS["grid"],
+        zeroline=False,
+        showline=True,
+        linecolor="rgba(148, 163, 184, 0.5)",
     )
     return fig
 
 
-def build_correlation_figure(
-    pair: str,
-    compare_pairs: list[str],
-    window_key: str,
-) -> go.Figure:
-    selected = [pair] + [code for code in compare_pairs if code != pair]
+def build_spot_figure(state: dict[str, Any]) -> go.Figure:
+    pair = state.get("pair", DEFAULT_PAIR)
+    rows = state.get("series", {}).get(pair, [])
+    frame = frame_from_rows(rows)
+    if frame.empty:
+        return empty_figure(format_pair(pair), "No FX spot data is available.")
+
+    frame["ma20"] = frame["val"].rolling(20).mean()
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=frame["date"],
+            y=frame["val"],
+            mode="lines",
+            line={"color": FIGURE_COLORS["blue"], "width": 3},
+            name=format_pair(pair),
+            hovertemplate="%{y:.5f}<extra></extra>",
+        )
+    )
+    if frame["ma20"].notna().any():
+        fig.add_trace(
+            go.Scatter(
+                x=frame["date"],
+                y=frame["ma20"],
+                mode="lines",
+                line={"color": FIGURE_COLORS["amber"], "width": 2, "dash": "dot"},
+                name="20-day average",
+                hovertemplate="%{y:.5f}<extra></extra>",
+            )
+        )
+
+    metrics = state.get("metrics", {})
+    subtitle = f"{metrics.get('source', 'Source unknown')} - {metrics.get('observations', 0)} observations"
+    fig.update_layout(**chart_layout(f"{format_pair(pair)} Spot", subtitle))
+    style_axes(fig, "Spot rate")
+    return fig
+
+
+def build_indexed_figure(state: dict[str, Any]) -> go.Figure:
+    pair = state.get("pair", DEFAULT_PAIR)
+    selected = [pair] + list(state.get("compare_pairs", []))
+    series_map = state.get("series", {})
+    colors = [
+        FIGURE_COLORS["teal"],
+        FIGURE_COLORS["purple"],
+        FIGURE_COLORS["amber"],
+        FIGURE_COLORS["red"],
+        FIGURE_COLORS["cyan"],
+    ]
+    fig = go.Figure()
+
+    for idx, code in enumerate(selected):
+        frame = indexed_series(series_map.get(code, []))
+        if frame.empty:
+            continue
+        fig.add_trace(
+            go.Scatter(
+                x=frame["date"],
+                y=frame["indexed"],
+                mode="lines",
+                line={
+                    "color": colors[idx % len(colors)],
+                    "width": 3 if code == pair else 2,
+                    "dash": "solid" if code == pair else "dash",
+                },
+                name=format_pair(code),
+                hovertemplate="%{y:.2f}<extra></extra>",
+            )
+        )
+
+    if not fig.data:
+        return empty_figure("Indexed Performance", "Not enough data to compare pairs.")
+
+    fig.add_hline(
+        y=100,
+        line_dash="dot",
+        line_color="rgba(100, 116, 139, 0.7)",
+        annotation_text="Start",
+        annotation_position="bottom right",
+    )
+    fig.update_layout(
+        **chart_layout(
+            "Indexed Performance",
+            "All selected pairs rebased to 100 at the start of the window.",
+        )
+    )
+    style_axes(fig, "Index")
+    return fig
+
+
+def build_correlation_figure(state: dict[str, Any]) -> go.Figure:
+    pair = state.get("pair", DEFAULT_PAIR)
+    selected = [pair] + list(state.get("compare_pairs", []))
     series_map: dict[str, pd.Series] = {}
     for code in selected:
-        series = return_series(load_forex_series(code, window_key))
+        series = return_series(state.get("series", {}).get(code, []))
         if not series.empty:
-            series_map[code.replace("_", "/")] = series
+            series_map[format_pair(code)] = series
+
     if len(series_map) < 2:
         return empty_figure(
-            "Cross-Pair Correlation Matrix",
-            "Not enough return data is available for correlation.",
+            "Cross-Pair Correlation",
+            "At least two return series are needed for correlation.",
         )
 
     corr = pd.DataFrame(series_map).corr()
@@ -228,30 +590,36 @@ def build_correlation_figure(
             y=corr.index,
             zmin=-1,
             zmax=1,
-            colorscale="RdBu",
-            reversescale=True,
+            colorscale=[
+                [0.0, FIGURE_COLORS["red"]],
+                [0.5, "#f8fafc"],
+                [1.0, FIGURE_COLORS["teal"]],
+            ],
             text=corr.round(2).values,
             texttemplate="%{text:.2f}",
-            colorbar={"title": "Correlation"},
+            hovertemplate="%{y} vs %{x}<br>Correlation %{z:.2f}<extra></extra>",
+            colorbar={"title": "Corr", "len": 0.84},
         )
     )
     fig.update_layout(
-        title="Cross-Pair Correlation Matrix",
-        height=420,
-        template="plotly_white",
-        margin={"l": 88, "r": 40, "t": 58, "b": 64},
+        **chart_layout(
+            "Cross-Pair Correlation",
+            "Rolling-window daily return relationships.",
+        )
     )
+    fig.update_xaxes(side="bottom")
     return fig
 
 
-def build_risk_figure(rows: list[dict[str, Any]], pair: str) -> go.Figure:
-    returns = return_series(rows)
-    title = f"{pair.replace('_', '/')} Risk Regime"
+def build_risk_figure(state: dict[str, Any]) -> go.Figure:
+    pair = state.get("pair", DEFAULT_PAIR)
+    returns = return_series(state.get("series", {}).get(pair, []))
     if returns.empty:
-        return empty_figure(title, "Not enough return data for risk.")
-    rolling_vol = returns.rolling(20).std().dropna() * (252**0.5)
+        return empty_figure("Risk Regime", "Not enough return data for risk analysis.")
+
+    rolling_vol = returns.rolling(20).std().dropna() * math.sqrt(252) * 100
     if rolling_vol.empty:
-        return empty_figure(title, "Need at least 20 return observations.")
+        return empty_figure("Risk Regime", "Need at least 20 return observations.")
 
     fig = go.Figure(
         go.Scatter(
@@ -259,20 +627,102 @@ def build_risk_figure(rows: list[dict[str, Any]], pair: str) -> go.Figure:
             y=rolling_vol.values,
             mode="lines",
             fill="tozeroy",
-            line={"color": "#f97316", "width": 3},
-            fillcolor="rgba(249, 115, 22, 0.16)",
+            line={"color": FIGURE_COLORS["red"], "width": 3},
+            fillcolor="rgba(220, 38, 38, 0.12)",
             name="20-day annualized volatility",
+            hovertemplate="%{y:.2f}%<extra></extra>",
         )
     )
-    fig.update_layout(
-        title=title,
-        height=420,
-        template="plotly_white",
-        margin={"l": 56, "r": 24, "t": 58, "b": 44},
-        xaxis_title="Date",
-        yaxis_title="Annualized volatility",
+    fig.add_hline(
+        y=8,
+        line_dash="dot",
+        line_color=FIGURE_COLORS["amber"],
+        annotation_text="Watch",
+        annotation_position="top left",
     )
+    fig.add_hline(
+        y=12,
+        line_dash="dot",
+        line_color=FIGURE_COLORS["red"],
+        annotation_text="Elevated",
+        annotation_position="top left",
+    )
+    fig.update_layout(
+        **chart_layout(
+            f"{format_pair(pair)} Risk Regime",
+            "20-day realized volatility, annualized.",
+        )
+    )
+    style_axes(fig, "Annualized volatility")
+    fig.update_yaxes(ticksuffix="%")
     return fig
+
+
+def build_market_note(metrics: dict[str, Any]) -> str:
+    if metrics.get("status") != "ok":
+        return "Not enough observations are available for this selection yet."
+
+    source_note = ""
+    source = str(metrics.get("source", ""))
+    if source != "Live FXMacroData API":
+        source_note = f" Source: {source.lower()}."
+
+    compare = ", ".join(metrics.get("compare_labels") or ["none"])
+    return (
+        f"{metrics['pair_label']} is {format_percent(metrics.get('window_return_pct'))} "
+        f"over the {metrics['window_label']} window. The latest value is "
+        f"{format_number(metrics.get('latest'), 5)} as of {metrics.get('latest_date')}. "
+        f"Recent annualized volatility is {format_percent(metrics.get('annualized_vol_pct'))}, "
+        f"putting the pair in a {metrics.get('risk_regime', 'unknown')} risk regime. "
+        f"Comparison set: {compare}.{source_note}"
+    )
+
+
+def status_strip(state: dict[str, Any]) -> html.Div:
+    metrics = state.get("metrics", {})
+    return html.Div(
+        [
+            html.Span(metrics.get("source", "Source unknown"), className="status-primary"),
+            html.Span(f"Updated {format_utc_timestamp(state.get('updated_at'))}"),
+            html.Span(f"{metrics.get('observations', 0)} observations"),
+            html.Span(f"MCP /_mcp"),
+        ],
+        className="status-content",
+    )
+
+
+def kpi_cards(metrics: dict[str, Any]) -> list[html.Div]:
+    return [
+        html.Div(
+            [html.Span("Pair"), html.Strong(metrics.get("pair_label", "n/a"))],
+            className="kpi",
+        ),
+        html.Div(
+            [html.Span("Latest"), html.Strong(format_number(metrics.get("latest"), 5))],
+            className="kpi",
+        ),
+        html.Div(
+            [
+                html.Span("Window return"),
+                html.Strong(format_percent(metrics.get("window_return_pct"))),
+            ],
+            className="kpi",
+        ),
+        html.Div(
+            [
+                html.Span("20-day vol"),
+                html.Strong(format_percent(metrics.get("annualized_vol_pct"))),
+            ],
+            className="kpi",
+        ),
+        html.Div(
+            [
+                html.Span("Risk regime"),
+                html.Strong(str(metrics.get("risk_regime", "n/a")).title()),
+            ],
+            className=f"kpi regime-{metrics.get('risk_regime', 'unknown')}",
+        ),
+    ]
 
 
 def serve_layout() -> html.Main:
@@ -280,19 +730,36 @@ def serve_layout() -> html.Main:
         [
             html.Header(
                 [
-                    html.P("FXMacroData + Plotly Dash MCP", className="eyebrow"),
-                    html.H1("Conversational FX Macro Monitor"),
-                    html.P(
-                        "Explore FX spot history, cross-pair correlations, and risk regimes through Dash controls or an MCP-compatible assistant.",
-                        className="lede",
+                    html.Div(
+                        [
+                            html.P("FXMacroData + Plotly Dash MCP", className="eyebrow"),
+                            html.H1("Conversational FX Macro Monitor"),
+                            html.P(
+                                "A Dash dashboard for FX spot moves, cross-pair relationships, and risk-regime context.",
+                                className="lede",
+                            ),
+                            html.Div(
+                                [
+                                    html.A("API docs", href=DOCS_URL, target="_blank"),
+                                    html.A("Subscribe", href=SUBSCRIBE_URL, target="_blank"),
+                                    html.A(
+                                        "Live public monitor",
+                                        href=PUBLIC_MONITOR_URL,
+                                        target="_blank",
+                                    ),
+                                ],
+                                className="link-row",
+                            ),
+                        ],
+                        className="hero-copy",
                     ),
                     html.Div(
                         [
-                            html.A("API docs", href=DOCS_URL, target="_blank"),
-                            html.A("Subscribe", href=SUBSCRIBE_URL, target="_blank"),
-                            html.A("Full public monitor", href=PUBLIC_MONITOR_URL, target="_blank"),
+                            html.Span("MCP endpoint", className="endpoint-label"),
+                            html.Code("/_mcp"),
+                            html.Small("Local HTTP transport"),
                         ],
-                        className="link-row",
+                        className="endpoint-panel",
                     ),
                 ],
                 className="hero",
@@ -305,7 +772,7 @@ def serve_layout() -> html.Main:
                             dcc.Dropdown(
                                 id="pair-select",
                                 options=PAIR_OPTIONS,
-                                value="EUR_USD",
+                                value=DEFAULT_PAIR,
                                 clearable=False,
                             ),
                         ],
@@ -321,7 +788,7 @@ def serve_layout() -> html.Main:
                                 multi=True,
                             ),
                         ],
-                        className="control",
+                        className="control compare-control",
                     ),
                     html.Div(
                         [
@@ -329,26 +796,67 @@ def serve_layout() -> html.Main:
                             dcc.RadioItems(
                                 id="window-select",
                                 options=WINDOW_OPTIONS,
-                                value="3m",
+                                value=DEFAULT_WINDOW,
                                 inline=True,
                                 className="radio-row",
                             ),
                         ],
                         className="control",
                     ),
+                    html.Button("Refresh", id="refresh-button", n_clicks=0, className="refresh-button"),
                 ],
                 className="controls",
             ),
-            html.Section(id="kpi-row", className="kpis"),
-            dcc.Graph(id="spot-graph"),
-            dcc.Graph(id="correlation-graph"),
-            dcc.Graph(id="risk-regime-graph"),
+            dcc.Loading(
+                id="loading-state",
+                type="default",
+                children=[
+                    html.Section(id="status-strip", className="status-strip"),
+                    html.Section(id="kpi-row", className="kpis"),
+                    html.Section(html.P(id="market-note"), className="market-note"),
+                    html.Section(
+                        [
+                            html.Div(
+                                dcc.Graph(
+                                    id="spot-graph",
+                                    config=GRAPH_CONFIG,
+                                    className="chart-graph",
+                                ),
+                                className="chart-panel chart-panel-wide",
+                            ),
+                            html.Div(
+                                dcc.Graph(
+                                    id="indexed-graph",
+                                    config=GRAPH_CONFIG,
+                                    className="chart-graph",
+                                ),
+                                className="chart-panel chart-panel-wide",
+                            ),
+                            html.Div(
+                                dcc.Graph(
+                                    id="correlation-graph",
+                                    config=GRAPH_CONFIG,
+                                    className="chart-graph",
+                                ),
+                                className="chart-panel",
+                            ),
+                            html.Div(
+                                dcc.Graph(
+                                    id="risk-regime-graph",
+                                    config=GRAPH_CONFIG,
+                                    className="chart-graph",
+                                ),
+                                className="chart-panel",
+                            ),
+                        ],
+                        className="chart-grid",
+                    ),
+                ],
+            ),
             dcc.Store(id="monitor-state-store"),
             html.Footer(
                 [
-                    "MCP endpoint for a local run: ",
-                    html.Code("/_mcp"),
-                    ". Keep API keys on the server.",
+                    "API keys stay server-side. The browser receives chart data and a non-sensitive dashboard snapshot only.",
                 ],
                 className="footer",
             ),
@@ -360,15 +868,17 @@ def serve_layout() -> html.Main:
 app = Dash(
     __name__,
     title="FXMacroData Dash MCP Monitor",
-    enable_mcp=True,
     suppress_callback_exceptions=True,
+    **_dash_mcp_constructor_options(),
 )
 server = app.server
 
-configure_mcp_server(
-    include_callbacks=False,
-    expose_callback_docstrings=False,
-)
+if configure_mcp_server is not None:
+    configure_mcp_server(
+        include_callbacks=False,
+        expose_callback_docstrings=False,
+    )
+
 app.layout = serve_layout
 
 app.index_string = """
@@ -380,26 +890,234 @@ app.index_string = """
     {%favicon%}
     {%css%}
     <style>
-      body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Inter, Segoe UI, Arial, sans-serif; }
-      .page { max-width: 1180px; margin: 0 auto; padding: 32px 20px 48px; }
-      .hero { border-bottom: 1px solid #e2e8f0; margin-bottom: 22px; padding-bottom: 22px; }
-      .eyebrow { margin: 0 0 8px; color: #0369a1; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-      h1 { margin: 0 0 10px; font-size: clamp(30px, 5vw, 54px); line-height: 1.02; letter-spacing: 0; }
-      .lede { max-width: 780px; color: #475569; font-size: 18px; line-height: 1.55; margin: 0 0 18px; }
-      .link-row { display: flex; flex-wrap: wrap; gap: 10px; }
-      .link-row a { color: #075985; font-weight: 700; text-decoration: none; border: 1px solid #bae6fd; background: #e0f2fe; padding: 8px 10px; border-radius: 8px; }
-      .controls { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(240px, 1.5fr) minmax(160px, .8fr); gap: 14px; margin: 22px 0; align-items: end; }
+      :root {
+        --bg: #eef2f7;
+        --panel: #ffffff;
+        --ink: #0f172a;
+        --muted: #64748b;
+        --line: #d9e2ec;
+        --blue: #2563eb;
+        --cyan: #0891b2;
+        --teal: #0f766e;
+        --amber: #d97706;
+        --red: #dc2626;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Inter, Segoe UI, Arial, sans-serif;
+      }
+      .page {
+        max-width: 1260px;
+        margin: 0 auto;
+        padding: 28px 20px 44px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 260px;
+        gap: 22px;
+        align-items: stretch;
+        margin-bottom: 18px;
+      }
+      .hero-copy,
+      .endpoint-panel,
+      .controls,
+      .status-strip,
+      .market-note,
+      .chart-panel,
+      .kpi {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+      }
+      .hero-copy { padding: 24px; }
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--cyan);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(34px, 5vw, 56px);
+        line-height: 1.02;
+        letter-spacing: 0;
+      }
+      .lede {
+        max-width: 760px;
+        margin: 0 0 18px;
+        color: #475569;
+        font-size: 18px;
+        line-height: 1.55;
+      }
+      .link-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .link-row a {
+        border: 1px solid #bae6fd;
+        background: #ecfeff;
+        color: #075985;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 800;
+        padding: 8px 10px;
+        text-decoration: none;
+      }
+      .endpoint-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 9px;
+        padding: 20px;
+      }
+      .endpoint-label {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+      .endpoint-panel code {
+        display: block;
+        width: fit-content;
+        background: #0f172a;
+        color: #f8fafc;
+        border-radius: 6px;
+        padding: 7px 9px;
+        font-size: 18px;
+      }
+      .endpoint-panel small { color: var(--muted); line-height: 1.45; }
+      .controls {
+        display: grid;
+        grid-template-columns: minmax(170px, 0.9fr) minmax(280px, 1.5fr) minmax(170px, 0.8fr) auto;
+        gap: 14px;
+        align-items: end;
+        margin-bottom: 14px;
+        padding: 16px;
+      }
       .control { min-width: 0; }
-      label { display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px; }
-      .radio-row label { margin-right: 12px; font-weight: 600; }
-      .kpis { display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 12px; margin: 0 0 14px; }
-      .kpi { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
-      .kpi span { display: block; color: #64748b; font-size: 12px; font-weight: 700; margin-bottom: 5px; }
-      .kpi strong { font-size: 20px; }
-      .footer { margin-top: 20px; color: #64748b; font-size: 14px; }
-      code { background: #e2e8f0; padding: 2px 5px; border-radius: 5px; }
-      @media (max-width: 760px) {
-        .controls, .kpis { grid-template-columns: 1fr; }
+      label {
+        display: block;
+        margin-bottom: 6px;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .radio-row label {
+        margin-right: 12px;
+        color: #334155;
+        font-weight: 700;
+      }
+      .refresh-button {
+        border: 0;
+        border-radius: 8px;
+        background: var(--blue);
+        color: #ffffff;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 800;
+        min-height: 38px;
+        padding: 0 16px;
+      }
+      .refresh-button:hover { background: #1d4ed8; }
+      .status-strip {
+        margin-bottom: 12px;
+        padding: 10px 14px;
+      }
+      .status-content {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .status-primary {
+        color: var(--teal);
+        font-weight: 900;
+      }
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(125px, 1fr));
+        gap: 12px;
+        margin: 0 0 12px;
+      }
+      .kpi {
+        min-height: 86px;
+        padding: 14px;
+      }
+      .kpi span {
+        display: block;
+        margin-bottom: 7px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .kpi strong {
+        color: var(--ink);
+        font-size: 21px;
+        line-height: 1.15;
+      }
+      .regime-normal strong { color: var(--teal); }
+      .regime-watch strong { color: var(--amber); }
+      .regime-elevated strong { color: var(--red); }
+      .market-note {
+        margin-bottom: 14px;
+        padding: 14px 16px;
+      }
+      .market-note p {
+        margin: 0;
+        color: #334155;
+        font-size: 15px;
+        line-height: 1.55;
+      }
+      .chart-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+      .chart-panel {
+        min-width: 0;
+        overflow: hidden;
+        padding: 8px;
+      }
+      .chart-panel-wide {
+        grid-column: span 1;
+      }
+      .chart-graph {
+        min-height: 420px;
+      }
+      .footer {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      @media (max-width: 920px) {
+        .hero,
+        .controls,
+        .chart-grid,
+        .kpis {
+          grid-template-columns: 1fr;
+        }
+        .endpoint-panel { min-height: auto; }
+      }
+      @media (max-width: 560px) {
+        .page { padding: 16px 12px 34px; }
+        .hero-copy,
+        .endpoint-panel,
+        .controls {
+          padding: 16px;
+        }
+        h1 { font-size: 32px; }
+        .lede { font-size: 16px; }
       }
     </style>
   </head>
@@ -415,78 +1133,80 @@ app.index_string = """
 """
 
 
-def kpi_cards(metrics: dict[str, Any]) -> list[html.Div]:
-    latest = metrics.get("latest")
-    return_pct = metrics.get("return_pct")
-    return [
-        html.Div(
-            [html.Span("Selected pair"), html.Strong(metrics["pair"].replace("_", "/"))],
-            className="kpi",
-        ),
-        html.Div(
-            [html.Span("Latest"), html.Strong("n/a" if latest is None else f"{latest:.5f}")],
-            className="kpi",
-        ),
-        html.Div(
-            [html.Span("Window return"), html.Strong("n/a" if return_pct is None else f"{return_pct:+.2f}%")],
-            className="kpi",
-        ),
-        html.Div(
-            [html.Span("Risk regime"), html.Strong(metrics["risk_regime"].title())],
-            className="kpi",
-        ),
-    ]
+@app.callback(
+    Output("monitor-state-store", "data"),
+    Output("status-strip", "children"),
+    Output("kpi-row", "children"),
+    Output("market-note", "children"),
+    Input("pair-select", "value"),
+    Input("compare-select", "value"),
+    Input("window-select", "value"),
+    Input("refresh-button", "n_clicks"),
+    **_dash_mcp_callback_options(),
+)
+def update_monitor_state(
+    pair: str,
+    compare_pairs: list[str] | None,
+    window_key: str,
+    _n_clicks: int,
+) -> tuple[dict[str, Any], html.Div, list[html.Div], str]:
+    """Fetch FX data and prepare one reusable dashboard state object."""
+    state = build_monitor_state(pair, compare_pairs, window_key)
+    metrics = state["metrics"]
+    return state, status_strip(state), kpi_cards(metrics), state["summary"]
 
 
 @app.callback(
     Output("spot-graph", "figure"),
+    Output("indexed-graph", "figure"),
     Output("correlation-graph", "figure"),
     Output("risk-regime-graph", "figure"),
-    Output("monitor-state-store", "data"),
-    Output("kpi-row", "children"),
-    Input("pair-select", "value"),
-    Input("compare-select", "value"),
-    Input("window-select", "value"),
-    mcp_enabled=True,
-    mcp_expose_docstring=True,
+    Input("monitor-state-store", "data"),
 )
-def update_figures(
-    pair: str,
-    compare_pairs: list[str] | None,
-    window_key: str,
-) -> tuple[go.Figure, go.Figure, go.Figure, dict[str, Any], list[html.Div]]:
-    """Render selected FX charts and dashboard state for an MCP assistant."""
-    safe_pair = pair if pair in PAIR_CODES else "EUR_USD"
-    safe_compare = [code for code in (compare_pairs or []) if code in PAIR_CODES]
-    safe_compare = safe_compare or DEFAULT_COMPARE
-    safe_window = window_key if window_key in WINDOW_DAYS else "3m"
-    rows = load_forex_series(safe_pair, safe_window)
-    metrics = build_context_metrics(safe_pair, safe_compare, safe_window)
+def render_figures(state: dict[str, Any] | None) -> tuple[go.Figure, go.Figure, go.Figure, go.Figure]:
+    if not state:
+        loading = empty_figure("Loading", "Loading dashboard state...")
+        return loading, loading, loading, loading
     return (
-        build_spot_figure(rows, safe_pair),
-        build_correlation_figure(safe_pair, safe_compare, safe_window),
-        build_risk_figure(rows, safe_pair),
-        metrics,
-        kpi_cards(metrics),
+        build_spot_figure(state),
+        build_indexed_figure(state),
+        build_correlation_figure(state),
+        build_risk_figure(state),
     )
 
 
 @mcp_enabled(name="get_public_macro_monitor_snapshot", expose_docstring=True)
 def get_public_macro_monitor_snapshot(
-    pair: str = "EUR_USD",
-    window_key: str = "3m",
+    pair: str = DEFAULT_PAIR,
+    window_key: str = DEFAULT_WINDOW,
     compare_pair: str | None = "GBP_USD",
 ) -> dict[str, Any]:
     """Return a compact FX spot, risk, and comparison summary."""
-    safe_pair = pair if pair in PAIR_CODES else "EUR_USD"
-    safe_window = window_key if window_key in WINDOW_DAYS else "3m"
-    safe_compare = compare_pair if compare_pair in PAIR_CODES else "GBP_USD"
-    return build_context_metrics(safe_pair, [safe_compare], safe_window)
+    safe_pair = sanitize_pair(pair)
+    safe_window = sanitize_window(window_key)
+    safe_compare = sanitize_compare_pairs(safe_pair, [compare_pair] if compare_pair else None)
+    state = build_monitor_state(safe_pair, safe_compare, safe_window)
+    metrics = state["metrics"]
+    return {
+        "summary": state["summary"],
+        "pair": metrics.get("pair_label"),
+        "window": metrics.get("window_label"),
+        "latest": metrics.get("latest"),
+        "latest_date": metrics.get("latest_date"),
+        "window_return_pct": metrics.get("window_return_pct"),
+        "annualized_vol_pct": metrics.get("annualized_vol_pct"),
+        "risk_regime": metrics.get("risk_regime"),
+        "compare_pairs": metrics.get("compare_labels"),
+        "observations": metrics.get("observations"),
+        "source": metrics.get("source"),
+        "api_key_configured": metrics.get("api_key_configured"),
+        "updated_at": state.get("updated_at"),
+    }
 
 
 if __name__ == "__main__":
     app.run(
-        debug=True,
+        debug=os.getenv("DASH_DEBUG", "0").lower() in {"1", "true", "yes"},
         host="0.0.0.0",
         port=int(os.getenv("PORT", "8050")),
     )
