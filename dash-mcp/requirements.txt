@@ -1,0 +1,6 @@
+dash>=4.3.0
+pandas>=2.0.0
+plotly>=5.20.0
+requests>=2.31.0
+kaleido>=1.0.0
+gunicorn>=21.0.0

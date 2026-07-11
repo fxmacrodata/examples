@@ -9,10 +9,10 @@ to a paid plan at:
 
 - https://fxmacrodata.com/subscribe
 
-> Public endpoints (USD announcements, forex, calendar, market sessions,
+> Public endpoints (USD announcements, calendar, market sessions,
 > data catalogue) can be used without an API key.
-> Protected endpoints (non-USD announcements, COT, commodities) require a
-> paid key from the subscribe flow.
+> Protected endpoints (non-USD announcements, FX spot history, COT,
+> commodities) require a paid key from the subscribe flow.
 
 ---
 
@@ -24,6 +24,7 @@ to a paid plan at:
 | FX Trade Setup Studio | Web (Vanilla JS) | GitHub Pages / Netlify / Vercel Static | _deploy link_ |
 | FX & Macro Explorer | Gradio | Hugging Face Spaces | _deploy link_ |
 | FX Macro Heatmap | Plotly Dash | Render | _deploy link_ |
+| Conversational FX Macro Monitor | Plotly Dash + Dash MCP | Render | _deploy link_ |
 | Macro Intelligence Dashboard | HoloViz Panel | Hugging Face Spaces | _deploy link_ |
 | FX Market Intelligence | Next.js | Vercel | _deploy link_ |
 | USD Macro Snapshot API | FastAPI | Railway/Render/Fly.io | _deploy link_ |
@@ -151,6 +152,7 @@ methods:
 cd streamlit   && pip install -r requirements.txt && streamlit run app.py
 cd gradio      && pip install -r requirements.txt && python app.py
 cd dash        && pip install -r requirements.txt && python app.py
+cd dash-mcp    && pip install -r requirements.txt && python app.py
 cd panel       && pip install -r requirements.txt && panel serve app.py --autoreload
 cd flask       && pip install -r requirements.txt && python app.py
 cd fastapi     && pip install -r requirements.txt && uvicorn app:app --reload --port 8010
@@ -206,6 +208,14 @@ cd cloudflare-worker && npm install && npm run dev
 2. Go to [render.com](https://render.com) → **New Web Service** → connect repo.
 3. Set root directory to `dash/`, start command: `gunicorn app:server`.
 4. Or use the included `render.yaml` blueprint: **New → Blueprint** → connect repo.
+
+### Dash MCP → Render
+
+1. Fork this repo.
+2. Go to [render.com](https://render.com) → **New Web Service** → connect repo.
+3. Set root directory to `dash-mcp/`, start command: `gunicorn app:server`.
+4. Add `FXMACRODATA_API_KEY` as an environment variable for protected FX spot history.
+5. Connect MCP clients to `https://<your-service>.onrender.com/_mcp`.
 
 ### Panel → Hugging Face Spaces (Docker)
 
@@ -291,7 +301,7 @@ guide and two usage patterns:
 |---|---|---|
 | `GET /v1/announcements/usd/{indicator}` | Free | Streamlit, Dash, Gradio, Panel |
 | `GET /v1/announcements/{currency}/{indicator}` | API key | All |
-| `GET /v1/forex/{base}/{quote}` | Free | Gradio, Backtrader, VectorBT |
+| `GET /v1/forex/{base}/{quote}` | API key | Gradio, Backtrader, VectorBT, Dash MCP |
 | `GET /v1/calendar/{currency}` | Free | Gradio, Vercel |
 | `GET /v1/commodities/{indicator}` | API key | Panel, Vercel, Backtrader |
 | `GET /v1/cot/{currency}` | API key | Vercel |

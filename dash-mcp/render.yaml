@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: fxmacrodata-dash-mcp
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:server
+    envVars:
+      - key: FXMACRODATA_API_KEY
+        sync: false
