@@ -38,6 +38,7 @@ to a paid plan at:
 | Macro Data Access | pandas-datareader | Local script | — |
 | Macro Carry Scanner | CCXT | Local script | — |
 | Carry Rebalance Bot | Blankly | Local strategy | — |
+| Release-Aware EUR/USD Backtest | Julia + Fastback.jl | Local script | — |
 
 ## Distribution-first publishing loop
 
@@ -166,8 +167,12 @@ cd pandas-datareader && pip install -r requirements.txt && python example.py
 # VectorBT Jupyter notebook
 cd vectorbt && pip install -r requirements.txt && jupyter notebook fxmacrodata_vectorbt.ipynb
 
-# CCXT macro scanner
-cd ccxt      && pip install -r requirements.txt && python example.py
+    # CCXT macro scanner
+    cd ccxt      && pip install -r requirements.txt && python example.py
+
+    # Julia + Fastback.jl release-aware EUR/USD backtest
+    cd julia && julia --project -e 'using Pkg; Pkg.instantiate()'
+    julia --project fastback_release_aware_backtest.jl
 
 # Next.js app
 cd vercel && npm install && npm run dev
