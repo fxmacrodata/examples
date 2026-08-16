@@ -167,12 +167,12 @@ cd pandas-datareader && pip install -r requirements.txt && python example.py
 # VectorBT Jupyter notebook
 cd vectorbt && pip install -r requirements.txt && jupyter notebook fxmacrodata_vectorbt.ipynb
 
-    # CCXT macro scanner
-    cd ccxt      && pip install -r requirements.txt && python example.py
+# CCXT macro scanner
+cd ccxt      && pip install -r requirements.txt && python example.py
 
-    # Julia + Fastback.jl release-aware EUR/USD backtest
-    cd julia && julia --project -e 'using Pkg; Pkg.instantiate()'
-    julia --project fastback_release_aware_backtest.jl
+# Julia + Fastback.jl release-aware EUR/USD backtest (Julia 1.11+)
+cd julia && julia --project -e 'using Pkg; Pkg.instantiate()'
+julia --project fastback_release_aware_backtest.jl
 
 # Next.js app
 cd vercel && npm install && npm run dev

@@ -24,11 +24,30 @@ function observation_date(row)
     return Date(first(split(String(value), 'T')))
 end
 
+"""Parse a Unix epoch or ISO-8601 timestamp as a UTC `DateTime`."""
+function publication_time_value(value)
+    value isa DateTime && return value
+    value isa Date && return DateTime(value)
+    value isa Number && return unix2datetime(Float64(value))
+
+    text = String(value)
+    epoch = tryparse(Float64, text)
+    epoch !== nothing && return unix2datetime(epoch)
+
+    normalized = replace(text, r"Z$" => "")
+    offset = match(r"^(.*)([+-])(\d\d):(\d\d)$", normalized)
+    offset === nothing && return DateTime(normalized)
+
+    local_time = DateTime(offset.captures[1])
+    displacement = Hour(parse(Int, offset.captures[3])) + Minute(parse(Int, offset.captures[4]))
+    return offset.captures[2] == "+" ? local_time - displacement : local_time + displacement
+end
+
 """Parse an announcement or revision timestamp from an FXMacroData row."""
 function publication_time(row)
-    value = row_value(row, ("announcement_datetime", "published_at", "release_datetime"))
+    value = row_value(row, ("epoch", "announcement_datetime", "published_at", "release_datetime"))
     value === nothing && throw(ArgumentError("Release row does not contain a publication timestamp"))
-    return DateTime(replace(String(value), r"Z$" => ""))
+    return publication_time_value(value)
 end
 
 """Parse a numeric field while preserving API values represented as JSON strings."""
@@ -41,13 +60,29 @@ end
 function policy_rate_events(rows)
     events = NamedTuple{(:released_at, :value),Tuple{DateTime,Float64}}[]
     for row in rows
+        revisions = get(row, "revisions", nothing)
+        if revisions isa AbstractVector && !isempty(revisions)
+            for revision in revisions
+                released_at = row_value(revision, ("epoch", "announcement_datetime"))
+                actual = row_value(revision, ("val", "actual", "value"))
+                released_at === nothing && continue
+                actual === nothing && continue
+                push!(
+                    events,
+                    (released_at=publication_time(revision), value=numeric_value(actual)),
+                )
+            end
+            continue
+        end
+
         released_at = row_value(row, ("announcement_datetime", "published_at", "release_datetime"))
-        actual = row_value(row, ("actual", "value", "val"))
+        actual = row_value(row, ("val", "actual", "value"))
         released_at === nothing && continue
         actual === nothing && continue
         push!(events, (released_at=publication_time(row), value=numeric_value(actual)))
     end
     sort!(events; by=event -> event.released_at)
+    unique!(events)
     return events
 end
 
@@ -65,7 +100,7 @@ end
 
 """Run the release-aware EUR/USD policy-rate demonstration in a Fastback account."""
 function run_backtest(; start_date=START_DATE, end_date=END_DATE)
-    client = Client()
+    client = Client(; base_url="https://api.fxmacrodata.com")
     release_rows = announcements(
         client,
         "usd",
