@@ -1,0 +1,14 @@
+[deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+Fastback = "2b92286b-cbc8-46f1-be48-a629b4baefca"
+FXMacroData = "c3744e4c-d024-465f-a33d-892fc1481992"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[sources]
+Fastback = {url = "https://github.com/rbeeli/Fastback.jl", rev = "3981c33610c97c97b61daca2631d73fdc0bc5b75"}
+FXMacroData = {url = "https://github.com/fxmacrodata/FXMacroData.jl", rev = "5e1def28fc23546c0a949d54a79ca30ec85ca01d"}
+
+[compat]
+Fastback = "0.9"
+FXMacroData = "0.1"
+julia = "1.11"
