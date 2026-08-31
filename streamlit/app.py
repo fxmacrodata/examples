@@ -5,7 +5,7 @@ A Streamlit example app demonstrating how to use the FXMacroData REST API.
 
 Free tier:   USD announcement indicators — no API key required.
 Pro tier:    Non-USD announcement indicators — requires a Professional API key.
-             Get yours at https://fxmacrodata.com/api-management
+             Get yours at https://api.fxmacrodata.com-management
 """
 
 import datetime
@@ -21,11 +21,11 @@ import streamlit as st
 # Constants
 # ---------------------------------------------------------------------------
 
-API_BASE = "https://fxmacrodata.com/api"
+API_BASE = "https://api.fxmacrodata.com"
 
 SITE_URL = "https://fxmacrodata.com"
 DOCS_URL = "https://fxmacrodata.com/documentation"
-API_KEYS_URL = "https://fxmacrodata.com/api-management"
+API_KEYS_URL = "https://api.fxmacrodata.com-management"
 SUBSCRIBE_URL = "https://fxmacrodata.com/subscribe"
 
 # Currencies available with a Professional API key (free = USD only)
@@ -86,13 +86,6 @@ PLACEHOLDER_KEY_MARKERS = (
 # ---------------------------------------------------------------------------
 
 
-def _build_url(currency: str, indicator: str, api_key: Optional[str] = None) -> str:
-    url = f"{API_BASE}/v1/announcements/{currency.lower()}/{indicator}"
-    if api_key:
-        url += f"?api_key={api_key}"
-    return url
-
-
 @st.cache_data(ttl=300, show_spinner=False)
 def fetch_indicator(
     currency: str,
@@ -106,13 +99,13 @@ def fetch_indicator(
     Returns (dataframe, error_message).  On success error_message is None.
     """
     params: dict = {"start_date": start_date, "end_date": end_date}
-    if api_key:
-        params["api_key"] = api_key
+    headers = {"X-API-Key": api_key} if api_key else {}
 
     try:
         resp = requests.get(
             f"{API_BASE}/v1/announcements/{currency.lower()}/{indicator}",
             params=params,
+            headers=headers,
             timeout=15,
         )
     except requests.exceptions.RequestException as exc:
@@ -154,7 +147,7 @@ def validate_api_key(api_key: str) -> tuple[bool, str]:
     try:
         resp = requests.get(
             f"{API_BASE}/v1/announcements/eur/policy_rate",
-            params={"api_key": api_key},
+            headers={"X-API-Key": api_key} if api_key else {},
             timeout=12,
         )
     except requests.exceptions.RequestException:
@@ -174,13 +167,13 @@ def fetch_calendar(
 ) -> tuple[Optional[pd.DataFrame], Optional[str]]:
     """Fetch upcoming macro releases from the FXMacroData calendar endpoint."""
     params: dict = {}
-    if api_key:
-        params["api_key"] = api_key
+    headers = {"X-API-Key": api_key} if api_key else {}
 
     try:
         resp = requests.get(
             f"{API_BASE}/v1/calendar/{currency.lower()}",
             params=params,
+            headers=headers,
             timeout=15,
         )
     except requests.exceptions.RequestException as exc:

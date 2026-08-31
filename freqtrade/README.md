@@ -6,7 +6,7 @@ data-loader helpers for every public FXMacroData endpoint plus a ready-to-run
 example strategy.
 
 > **The public example paths use USD announcements and can run without an API key.**
-> Add a [Professional key](https://fxmacrodata.com/api-management) to unlock
+> Add a [Professional key](https://api.fxmacrodata.com-management) to unlock
 > protected non-USD announcements, COT positioning, and commodities data.
 
 ---
@@ -250,7 +250,7 @@ def populate_indicators(self, dataframe, metadata):
 | COT positioning | Professional plan |
 | Release calendars | **Public** |
 
-[Get your API key →](https://fxmacrodata.com/api-management)
+[Get your API key →](https://api.fxmacrodata.com-management)
 
 Set the key as an environment variable (picked up automatically):
 
@@ -300,6 +300,6 @@ self._api_key = config.get("fxmacrodata_api_key")
 
 - [FXMacroData](https://fxmacrodata.com)
 - [API Documentation](https://fxmacrodata.com/documentation)
-- [Get an API key](https://fxmacrodata.com/api-management)
+- [Get an API key](https://api.fxmacrodata.com-management)
 - [Freqtrade documentation](https://www.freqtrade.io/en/stable/)
 - [Freqtrade strategy customisation](https://www.freqtrade.io/en/stable/strategy-customization/)

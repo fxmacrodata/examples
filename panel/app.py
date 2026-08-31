@@ -8,7 +8,7 @@ REST API.
 Free tier  : USD macro indicators, most recent 90 days, no API key.
              Precious metals require an API key.
 Pro tier   : Full 18-currency grid — requires a Professional API key.
-             Get yours at https://fxmacrodata.com/api-management
+             Get yours at https://api.fxmacrodata.com-management
 
 Run locally
 -----------
@@ -42,10 +42,10 @@ pn.extension("plotly", sizing_mode="stretch_width")
 
 # ─── Constants ────────────────────────────────────────────────────────────────
 
-API_BASE = "https://fxmacrodata.com/api/v1"
+API_BASE = "https://api.fxmacrodata.com/v1"
 SITE_URL = "https://fxmacrodata.com"
 DOCS_URL = "https://fxmacrodata.com/documentation"
-API_KEYS_URL = "https://fxmacrodata.com/api-management"
+API_KEYS_URL = "https://api.fxmacrodata.com-management"
 
 FREE_CURRENCY = "USD"
 
@@ -166,13 +166,13 @@ def fetch_indicator(
         return cached
 
     params: dict = {"start_date": start_date, "end_date": end_date}
-    if api_key:
-        params["api_key"] = api_key
+    headers = {"X-API-Key": api_key} if api_key else {}
 
     try:
         resp = requests.get(
             f"{API_BASE}/announcements/{currency.lower()}/{indicator}",
             params=params,
+            headers=headers,
             timeout=15,
         )
     except requests.exceptions.RequestException as exc:
@@ -218,13 +218,13 @@ def fetch_commodity(
         return cached
 
     params: dict = {"start_date": start_date, "end_date": end_date}
-    if api_key:
-        params["api_key"] = api_key
+    headers = {"X-API-Key": api_key} if api_key else {}
 
     try:
         resp = requests.get(
             f"{API_BASE}/commodities/{indicator.lower()}",
             params=params,
+            headers=headers,
             timeout=15,
         )
     except requests.exceptions.RequestException as exc:

@@ -315,7 +315,7 @@ Full reference: [fxmacrodata.com/documentation](https://fxmacrodata.com/document
 - [FXMacroData](https://fxmacrodata.com)
 - [API Docs](https://fxmacrodata.com/documentation)
 - [Subscribe](https://fxmacrodata.com/subscribe)
-- [API management](https://fxmacrodata.com/api-management)
+- [API management](https://api.fxmacrodata.com-management)
 - [Public examples repository](https://github.com/fxmacrodata/examples)
 - [Security and key policy](./SECURITY_AND_KEYS.md)
 - [Public repo publishing playbook](./PUBLIC_REPO_PUBLISHING_PLAYBOOK.md)

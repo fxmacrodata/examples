@@ -6,7 +6,7 @@ and the **[VectorBT](https://vectorbt.dev)** backtesting library.
 
 > **USD announcement indicators are public for the most recent 90 days. EUR/USD
 > forex data requires an API key.**  
-> Enter a [Professional API key](https://fxmacrodata.com/api-management) to
+> Enter a [Professional API key](https://api.fxmacrodata.com-management) to
 > unlock protected non-USD announcements and the interest-rate carry strategy.
 
 ---
@@ -77,6 +77,6 @@ Full API reference: [fxmacrodata.com/documentation](https://fxmacrodata.com/docu
 
 - 🌐 [FXMacroData](https://fxmacrodata.com)
 - 📖 [API Docs](https://fxmacrodata.com/documentation)
-- 🔑 [Get an API key](https://fxmacrodata.com/api-management)
+- 🔑 [Get an API key](https://api.fxmacrodata.com-management)
 - 📦 [VectorBT documentation](https://vectorbt.dev)
 - 💬 [VectorBT community](https://github.com/polakowo/vectorbt/discussions)

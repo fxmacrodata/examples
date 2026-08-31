@@ -6,7 +6,7 @@ generates an analyst-style narrative, powered by the
 **[FXMacroData API](https://fxmacrodata.com)**.
 
 > **USD announcement data is public — no API key required.**  
-> Enter a [Professional API key](https://fxmacrodata.com/api-management) to
+> Enter a [Professional API key](https://api.fxmacrodata.com-management) to
 > unlock protected non-USD announcement coverage.
 
 ---
@@ -103,4 +103,4 @@ Full API reference: <https://fxmacrodata.com/documentation>
 
 - 🌐 [FXMacroData](https://fxmacrodata.com)
 - 📖 [API Docs](https://fxmacrodata.com/documentation)
-- 🔑 [Get an API key](https://fxmacrodata.com/api-management)
+- 🔑 [Get an API key](https://api.fxmacrodata.com-management)

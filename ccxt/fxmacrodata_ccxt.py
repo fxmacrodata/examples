@@ -48,7 +48,7 @@ API key
 FX spot rates are public, and USD announcement indicators are public.
 To unlock protected non-USD announcements, commodities, and COT data, pass
 ``apiKey`` in the config dict or set the ``FXMACRODATA_API_KEY`` environment variable.
-Get a key at https://fxmacrodata.com/api-management
+Get a key at https://api.fxmacrodata.com-management
 """
 from __future__ import annotations
 
@@ -61,10 +61,10 @@ import requests
 
 # ─── Constants ───────────────────────────────────────────────────────────────
 
-_API_BASE = "https://fxmacrodata.com/api/v1"
+_API_BASE = "https://api.fxmacrodata.com/v1"
 _SITE_URL = "https://fxmacrodata.com"
 _DOCS_URL = "https://fxmacrodata.com/documentation"
-_KEYS_URL = "https://fxmacrodata.com/api-management"
+_KEYS_URL = "https://api.fxmacrodata.com-management"
 
 # Predefined FX pairs.  All FX spot rates are free; macro indicators for
 # currencies other than USD require a Professional API key.
@@ -550,11 +550,12 @@ class fxmacrodata(ccxt.Exchange):
 
     def _api_get(self, path: str, params: dict) -> List[dict]:
         """Execute a GET request against the FXMacroData REST API."""
-        if self.apiKey:
-            params = {**params, "api_key": self.apiKey}
+        # The key travels in the X-API-Key header rather than the query string,
+        # which proxies, CDNs and access logs would record.
+        headers = {"X-API-Key": self.apiKey} if self.apiKey else {}
 
         url = f"{_API_BASE}{path}"
-        resp = requests.get(url, params=params, timeout=30)
+        resp = requests.get(url, params=params, headers=headers, timeout=30)
 
         if resp.status_code == 401:
             raise ccxt.AuthenticationError(

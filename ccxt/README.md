@@ -7,7 +7,7 @@ or analysis code can consume FXMacroData FX spot rates, commodity prices, and
 macroeconomic indicator series with minimal changes.
 
 > **Public FX routes and USD announcements work without an API key.**
-> Add a [Professional key](https://fxmacrodata.com/api-management) to unlock
+> Add a [Professional key](https://api.fxmacrodata.com-management) to unlock
 > protected non-USD announcements, COT positioning, and commodities data.
 
 ---
@@ -295,7 +295,7 @@ print(signal.tail(10))
 | COT positioning | Professional plan |
 | Release calendars | **Public** |
 
-[Get your API key →](https://fxmacrodata.com/api-management)
+[Get your API key →](https://api.fxmacrodata.com-management)
 
 Set the key as an environment variable (picked up automatically):
 
@@ -353,6 +353,6 @@ python example.py --api-key YOUR_KEY
 
 - [FXMacroData](https://fxmacrodata.com)
 - [API Documentation](https://fxmacrodata.com/documentation)
-- [Get an API key](https://fxmacrodata.com/api-management)
+- [Get an API key](https://api.fxmacrodata.com-management)
 - [CCXT docs](https://docs.ccxt.com)
 - [CCXT GitHub](https://github.com/ccxt/ccxt)

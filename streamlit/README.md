@@ -4,7 +4,7 @@ A Streamlit example app that visualizes macroeconomic indicators from the
 **[FXMacroData API](https://fxmacrodata.com)**.
 
 > **USD announcement data is public — no API key required.**  
-> Enter a [Professional API key](https://fxmacrodata.com/api-management) in the
+> Enter a [Professional API key](https://api.fxmacrodata.com-management) in the
 > sidebar to unlock protected non-USD announcements.
 
 ---
@@ -74,4 +74,4 @@ Full API reference: <https://fxmacrodata.com/documentation>
 
 - 🌐 [FXMacroData](https://fxmacrodata.com)
 - 📖 [API Docs](https://fxmacrodata.com/documentation)
-- 🔑 [Get an API key](https://fxmacrodata.com/api-management)
+- 🔑 [Get an API key](https://api.fxmacrodata.com-management)

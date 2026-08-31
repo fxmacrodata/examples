@@ -5,7 +5,7 @@ A Next.js example app that visualises FX market data from the
 
 > **The calendar tab is public, while precious metals and COT require an API key.**  
 > Get paid access via [FXMacroData Subscribe](https://fxmacrodata.com/subscribe), then
-> manage keys in [API management](https://fxmacrodata.com/api-management).
+> manage keys in [API management](https://api.fxmacrodata.com-management).
 
 ---
 
@@ -64,7 +64,7 @@ The three Next.js API Route Handlers (`app/api/metals/`, `app/api/cot/`,
 `app/api/calendar/`) act as a lightweight proxy.  Requests from the browser go
 to `/api/*` on the same origin; the Route Handler adds the
 `FXMACRODATA_API_KEY` environment variable before forwarding to
-`https://fxmacrodata.com/api`.  The key is **never** sent to the browser.
+`https://api.fxmacrodata.com`.  The key is **never** sent to the browser.
 
 Users can also paste a key directly into the UI input — it is passed through
 the same proxy but stored only in React state (not `localStorage`) and cleared
@@ -99,4 +99,4 @@ Full API reference: <https://fxmacrodata.com/documentation>
 - 🌐 [FXMacroData](https://fxmacrodata.com)
 - 📖 [API Docs](https://fxmacrodata.com/documentation)
 - 💳 [Subscribe](https://fxmacrodata.com/subscribe)
-- 🔑 [Get an API key](https://fxmacrodata.com/api-management)
+- 🔑 [Get an API key](https://api.fxmacrodata.com-management)

@@ -1,4 +1,4 @@
-const API_BASE = 'https://fxmacrodata.com/api/v1';
+const API_BASE = 'https://api.fxmacrodata.com/v1';
 const SUBSCRIBE_URL = 'https://fxmacrodata.com/subscribe';
 
 function json(data, status = 200) {

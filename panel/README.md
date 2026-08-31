@@ -5,7 +5,7 @@ precious metals prices across 18 currencies, powered by the
 **[FXMacroData API](https://fxmacrodata.com)**.
 
 > **USD announcement data is public.**  
-> Enter a [Professional API key](https://fxmacrodata.com/api-management) to
+> Enter a [Professional API key](https://api.fxmacrodata.com-management) to
 > unlock non-USD announcements and the precious-metals endpoint.
 
 ---
@@ -98,5 +98,5 @@ Full API reference: <https://fxmacrodata.com/documentation>
 
 - 🌐 [FXMacroData](https://fxmacrodata.com)
 - 📖 [API Docs](https://fxmacrodata.com/documentation)
-- 🔑 [Get an API key](https://fxmacrodata.com/api-management)
+- 🔑 [Get an API key](https://api.fxmacrodata.com-management)
 - 🖥️ [HoloViz Panel](https://panel.holoviz.org)

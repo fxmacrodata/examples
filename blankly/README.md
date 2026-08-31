@@ -8,7 +8,7 @@ no brokerage account required.
 
 > **USD announcement data is public for the most recent 90 days. EUR/USD spot
 > rates need an API key.**
-> Add a [Professional key](https://fxmacrodata.com/api-management) to unlock
+> Add a [Professional key](https://api.fxmacrodata.com-management) to unlock
 > protected non-USD announcements, COT positioning, and commodities data.
 
 ---
@@ -284,6 +284,6 @@ print(results)
 
 - [FXMacroData](https://fxmacrodata.com)
 - [API Documentation](https://fxmacrodata.com/documentation)
-- [Get an API key](https://fxmacrodata.com/api-management)
+- [Get an API key](https://api.fxmacrodata.com-management)
 - [Blankly docs](https://docs.blankly.finance)
 - [Blankly GitHub](https://github.com/Blankly-Finance/Blankly)

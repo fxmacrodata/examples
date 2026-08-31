@@ -240,7 +240,7 @@ df = fxmd.get_data_fxmacrodata("EUR", "2020-01-01", "2025-12-31",
 | Non-USD announcement indicators | Professional plan |
 | COT positioning data | Professional plan |
 
-[Get your API key →](https://fxmacrodata.com/api-management)
+[Get your API key →](https://api.fxmacrodata.com-management)
 
 Set the key as an environment variable so you never have to hardcode it:
 
@@ -271,5 +271,5 @@ Set `FXMACRODATA_API_KEY` first to also run the Pro-tier examples.
 
 - 🌐 [FXMacroData Website](https://fxmacrodata.com)
 - 📖 [API Documentation](https://fxmacrodata.com/documentation)
-- 🔑 [Get your API key](https://fxmacrodata.com/api-management)
+- 🔑 [Get your API key](https://api.fxmacrodata.com-management)
 - 📦 [pandas-datareader](https://pandas-datareader.readthedocs.io/)

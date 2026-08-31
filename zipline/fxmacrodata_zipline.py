@@ -44,7 +44,7 @@ FX spot rates are public, and USD announcement indicators are public.
 To unlock protected non-USD announcements and commodities, pass
 ``api_key="YOUR_KEY"`` to any loader or set the ``FXMACRODATA_API_KEY``
 environment variable.
-Get a key at https://fxmacrodata.com/api-management
+Get a key at https://api.fxmacrodata.com-management
 """
 from __future__ import annotations
 
@@ -57,10 +57,10 @@ import requests
 
 # ─── Constants ───────────────────────────────────────────────────────────────
 
-API_BASE = "https://fxmacrodata.com/api/v1"
+API_BASE = "https://api.fxmacrodata.com/v1"
 SITE_URL = "https://fxmacrodata.com"
 DOCS_URL = "https://fxmacrodata.com/documentation"
-API_KEYS_URL = "https://fxmacrodata.com/api-management"
+API_KEYS_URL = "https://api.fxmacrodata.com-management"
 
 _DEFAULT_BUNDLE_NAME = "fxmacrodata"
 _DEFAULT_CALENDAR = "24/5"
@@ -77,10 +77,23 @@ __all__ = [
 # ─── Private helpers ──────────────────────────────────────────────────────────
 
 
-def _get(path: str, params: dict, timeout: int = 30) -> dict:
+def _auth_headers(api_key=None) -> dict:
+    """Return the auth header for a key, or no headers when unauthenticated.
+
+    The key travels in the ``X-API-Key`` header rather than the query string.
+    A key in the URL is recorded by proxies, CDNs and server access logs, and
+    can leak through ``Referer``. The API still accepts an ``api_key`` query
+    parameter, but the header is preferred.
+    """
+    return {"X-API-Key": api_key} if api_key else {}
+
+
+def _get(path: str, params: dict, timeout: int = 30, api_key=None) -> dict:
     """Execute a GET request against the FXMacroData REST API."""
     url = f"{API_BASE}{path}"
-    resp = requests.get(url, params=params, timeout=timeout)
+    resp = requests.get(
+        url, params=params, headers=_auth_headers(api_key), timeout=timeout
+    )
     if resp.status_code == 401:
         raise PermissionError(
             "A Professional API key is required for this endpoint. "
@@ -158,10 +171,8 @@ def fetch_forex(
     """
     params: dict = {"start_date": start_date, "end_date": end_date}
     key = _api_key(api_key)
-    if key:
-        params["api_key"] = key
 
-    payload = _get(f"/forex/{base.lower()}/{quote.lower()}", params)
+    payload = _get(f"/forex/{base.lower()}/{quote.lower()}", params, api_key=key)
     rows = payload.get("data", [])
     if not rows:
         raise ValueError(
@@ -211,10 +222,8 @@ def fetch_indicator(
     """
     params: dict = {"start_date": start_date, "end_date": end_date}
     key = _api_key(api_key)
-    if key:
-        params["api_key"] = key
 
-    payload = _get(f"/announcements/{currency.lower()}/{indicator}", params)
+    payload = _get(f"/announcements/{currency.lower()}/{indicator}", params, api_key=key)
     rows = payload.get("data", [])
     if not rows:
         raise ValueError(
@@ -259,10 +268,8 @@ def fetch_commodity(
     """
     params: dict = {"start_date": start_date, "end_date": end_date}
     key = _api_key(api_key)
-    if key:
-        params["api_key"] = key
 
-    payload = _get(f"/commodities/{indicator.lower()}", params)
+    payload = _get(f"/commodities/{indicator.lower()}", params, api_key=key)
     rows = payload.get("data", [])
     if not rows:
         raise ValueError(

@@ -7,7 +7,7 @@ USD inflation and policy_rate are free for the most recent 90 days, with no
 API key. FX spot rates and commodities require a key.
 All other currencies and COT data require a Professional API key.
 
-Get your key at https://fxmacrodata.com/api-management
+Get your key at https://api.fxmacrodata.com-management
 """
 import os
 import datetime
