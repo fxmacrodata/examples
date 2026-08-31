@@ -11,7 +11,8 @@ USD real policy rate = Fed Funds Rate (%) − CPI Inflation (%)
   Negative real rate  → monetary conditions loose → risk-on → LONG BTC/USDT
   Positive real rate  → monetary conditions tight → risk-off → EXIT long
 
-All data used is **free** — no API key required:
+Data used (USD announcements are free for the most recent 90 days; FX spot
+rates and commodities require an API key):
   /v1/announcements/usd/policy_rate   — Fed Funds Rate (%)
   /v1/announcements/usd/inflation     — CPI Inflation YoY (%)
 

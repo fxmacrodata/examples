@@ -5,9 +5,10 @@ FXMacroData — Backtrader Example
 Inflation Signal Strategy: trade EUR/USD based on the month-over-month
 direction of US CPI inflation.
 
-All data used in this demo is **free** — no API key required:
-  - /v1/forex/eur/usd                  — EUR/USD daily spot rates
-  - /v1/announcements/usd/inflation    — US CPI Inflation (YoY %)
+Data used in this demo:
+  - /v1/forex/eur/usd                  — EUR/USD daily spot rates (API key required)
+  - /v1/announcements/usd/inflation    — US CPI Inflation (YoY %), free for
+                                         the most recent 90 days
 
 Strategy logic
 --------------
@@ -28,19 +29,6 @@ Run
     python example.py --start 2024-06-01 --no-plot
     python example.py --api-key YOUR_KEY      # unlock protected non-USD announcements and commodities
 """
-import logging
-
-__copilot_logger = logging.getLogger(__name__)
-
-def __copilot_log_print(*args, sep=" ", end="\n", file=None, flush=False):
-    message = sep.join(str(arg) for arg in args)
-    if end and end != "\n":
-        message += end.rstrip("\n")
-    stream = file if file is not None else sys.stdout
-    level = logging.ERROR if stream is sys.stderr else logging.INFO
-    __copilot_logger.log(level, message)
-
-
 from __future__ import annotations
 
 import argparse
@@ -114,7 +102,7 @@ class InflationSignalStrategy(bt.Strategy):
     def log(self, msg: str, dt: Optional[datetime.date] = None) -> None:
         if self.p.verbose:
             dt = dt or self.datas[0].datetime.date(0)
-            __copilot_log_print(f"{dt}  {msg}")
+            print(f"{dt}  {msg}")
 
     # ── Order / trade notifications ────────────────────────────────────────────
 
@@ -226,7 +214,7 @@ def run_backtest(
     _banner(start, end, initial_cash)
 
     # ── Fetch data ─────────────────────────────────────────────────────────────
-    __copilot_log_print("Fetching EUR/USD spot rates from FXMacroData…")
+    print("Fetching EUR/USD spot rates from FXMacroData…")
     fx_feed = load_forex("EUR", "USD", start, end, api_key=api_key)
 
     # Load inflation from slightly before start so the lookback window is warm
@@ -234,7 +222,7 @@ def run_backtest(
         datetime.date.fromisoformat(start)
         - datetime.timedelta(days=130)  # ≈ 6 months back to fill lookback
     ).isoformat()
-    __copilot_log_print("Fetching USD CPI inflation from FXMacroData…")
+    print("Fetching USD CPI inflation from FXMacroData…")
     infl_feed = load_indicator(
         "USD",
         "inflation",
@@ -269,7 +257,7 @@ def run_backtest(
     cerebro.addanalyzer(btanalyzers.TradeAnalyzer, _name="trades")
 
     # ── Run ───────────────────────────────────────────────────────────────────
-    __copilot_log_print(f"\nStarting portfolio value: ${cerebro.broker.getvalue():,.2f}\n")
+    print(f"\nStarting portfolio value: ${cerebro.broker.getvalue():,.2f}\n")
     results = cerebro.run()
     strat = results[0]
 
@@ -284,32 +272,32 @@ def run_backtest(
         try:
             cerebro.plot(style="line", iplot=False, numfigs=1)
         except Exception as exc:
-            __copilot_log_print(f"\nNote: chart unavailable ({exc}).")
-            __copilot_log_print("Run with --no-plot to suppress this message.")
+            print(f"\nNote: chart unavailable ({exc}).")
+            print("Run with --no-plot to suppress this message.")
 
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
 
 
 def _banner(start: str, end: str, cash: float) -> None:
-    __copilot_log_print()
-    __copilot_log_print("FXMacroData × Backtrader — Inflation Signal Strategy")
-    __copilot_log_print("─" * 62)
-    __copilot_log_print(f"  Period         : {start} → {end}")
-    __copilot_log_print(f"  Initial cash   : ${cash:,.0f}")
-    __copilot_log_print(f"  Instrument     : EUR/USD spot")
-    __copilot_log_print(f"  Signal         : USD CPI inflation 3-month momentum (free data)")
-    __copilot_log_print(f"  Commission     : ≈ 1.5 pip spread")
-    __copilot_log_print()
+    print()
+    print("FXMacroData × Backtrader — Inflation Signal Strategy")
+    print("─" * 62)
+    print(f"  Period         : {start} → {end}")
+    print(f"  Initial cash   : ${cash:,.0f}")
+    print(f"  Instrument     : EUR/USD spot")
+    print(f"  Signal         : USD CPI inflation 3-month momentum (free data)")
+    print(f"  Commission     : ≈ 1.5 pip spread")
+    print()
 
 
 def _print_results(strat, final_value: float, total_return: float) -> None:
-    __copilot_log_print()
-    __copilot_log_print("─" * 62)
-    __copilot_log_print("RESULTS")
-    __copilot_log_print("─" * 62)
-    __copilot_log_print(f"  Final portfolio value  : ${final_value:>12,.2f}")
-    __copilot_log_print(f"  Total return           : {total_return:>+11.2f}%")
+    print()
+    print("─" * 62)
+    print("RESULTS")
+    print("─" * 62)
+    print(f"  Final portfolio value  : ${final_value:>12,.2f}")
+    print(f"  Total return           : {total_return:>+11.2f}%")
 
     sharpe_dict = strat.analyzers.sharpe.get_analysis()
     drawdown_dict = strat.analyzers.drawdown.get_analysis()
@@ -317,25 +305,25 @@ def _print_results(strat, final_value: float, total_return: float) -> None:
 
     sharpe_val = sharpe_dict.get("sharperatio")
     if sharpe_val is not None:
-        __copilot_log_print(f"  Sharpe ratio           : {sharpe_val:>12.3f}")
+        print(f"  Sharpe ratio           : {sharpe_val:>12.3f}")
 
     max_dd = drawdown_dict.get("max", {}).get("drawdown", 0.0)
-    __copilot_log_print(f"  Max drawdown           : {max_dd:>11.2f}%")
+    print(f"  Max drawdown           : {max_dd:>11.2f}%")
 
     try:
         total = trade_dict.total.closed
-        __copilot_log_print(f"  Total closed trades    : {total:>12}")
+        print(f"  Total closed trades    : {total:>12}")
         if total:
             won = trade_dict.won.total
             win_rate = won / total * 100
             avg_pnl = trade_dict.pnl.net.total / total
-            __copilot_log_print(f"  Win rate               : {win_rate:>11.1f}%")
-            __copilot_log_print(f"  Avg net P&L per trade  : ${avg_pnl:>11.2f}")
+            print(f"  Win rate               : {win_rate:>11.1f}%")
+            print(f"  Avg net P&L per trade  : ${avg_pnl:>11.2f}")
     except (AttributeError, ZeroDivisionError):
         pass
 
-    __copilot_log_print("─" * 62)
-    __copilot_log_print()
+    print("─" * 62)
+    print()
 
 
 # ─── CLI entry point ─────────────────────────────────────────────────────────
@@ -369,7 +357,7 @@ def _cli() -> argparse.Namespace:
         "--api-key",
         default=None,
         dest="api_key",
-        help="FXMacroData API key (optional — USD data is always free)",
+        help="FXMacroData API key (required for FX spot rates and commodities)",
     )
     p.add_argument(
         "--no-plot",
@@ -390,8 +378,8 @@ if __name__ == "__main__":
             plot=not args.no_plot,
         )
     except PermissionError as exc:
-        __copilot_log_print(f"\nError: {exc}", file=sys.stderr)
+        print(f"\nError: {exc}", file=sys.stderr)
         sys.exit(1)
     except ValueError as exc:
-        __copilot_log_print(f"\nError: {exc}", file=sys.stderr)
+        print(f"\nError: {exc}", file=sys.stderr)
         sys.exit(1)

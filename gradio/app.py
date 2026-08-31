@@ -4,7 +4,8 @@ FXMacroData – FX & Macro Explorer
 A Gradio example app for exploring macroeconomic indicators, FX spot rates,
 and economic release calendars via the FXMacroData REST API.
 
-Free tier  : USD macro indicators + any FX pair — no API key required.
+Free tier  : USD macro indicators, most recent 90 days, no API key.
+             FX spot rates require an API key.
 Pro tier   : All 18 currencies — requires a Professional API key.
              Get yours at https://fxmacrodata.com/api-management
 
@@ -625,7 +626,7 @@ with gr.Blocks(title="FX & Macro Explorer – FXMacroData") as demo:
         with gr.Tab("📈 Indicator Explorer"):
             gr.Markdown(
                 "Select a currency and indicator to explore the historical time series.  \n"
-                "USD is always free. A Professional API key is required for other currencies."
+                "USD announcements are free for the most recent 90 days. Other currencies need an API key."
             )
 
             with gr.Row():
@@ -705,7 +706,7 @@ with gr.Blocks(title="FX & Macro Explorer – FXMacroData") as demo:
         with gr.Tab("💱 FX Rates"):
             gr.Markdown(
                 "Look up historical FX spot rates for any currency pair.  \n"
-                "All pairs are available with no API key required."
+                "FX spot rates require an API key."
             )
 
             with gr.Row():

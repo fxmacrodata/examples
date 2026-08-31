@@ -5,7 +5,8 @@ A HoloViz Panel example app that visualises macroeconomic indicators and
 precious metals prices across major currencies, powered by the FXMacroData
 REST API.
 
-Free tier  : USD macro indicators + precious metals — no API key required.
+Free tier  : USD macro indicators, most recent 90 days, no API key.
+             Precious metals require an API key.
 Pro tier   : Full 18-currency grid — requires a Professional API key.
              Get yours at https://fxmacrodata.com/api-management
 
@@ -410,7 +411,7 @@ def metals_view(years: int, api_key: str) -> pn.Column:
         pn.pane.Markdown(
             "Daily **gold**, **silver**, and **platinum** spot prices sourced "
             "from official bullion data via the FXMacroData API.  \n"
-            "_Precious metals data is available on the free tier — no API key required._",
+            "_Precious metals data requires an API key._",
             sizing_mode="stretch_width",
         ),
         pn.layout.Divider(),

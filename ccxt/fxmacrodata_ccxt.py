@@ -50,20 +50,6 @@ To unlock protected non-USD announcements, commodities, and COT data, pass
 ``apiKey`` in the config dict or set the ``FXMACRODATA_API_KEY`` environment variable.
 Get a key at https://fxmacrodata.com/api-management
 """
-import logging
-import sys
-
-__copilot_logger = logging.getLogger(__name__)
-
-def __copilot_log_print(*args, sep=" ", end="\n", file=None, flush=False):
-    message = sep.join(str(arg) for arg in args)
-    if end and end != "\n":
-        message += end.rstrip("\n")
-    stream = file if file is not None else sys.stdout
-    level = logging.ERROR if stream is sys.stderr else logging.INFO
-    __copilot_logger.log(level, message)
-
-
 from __future__ import annotations
 
 import datetime
@@ -364,7 +350,7 @@ class fxmacrodata(ccxt.Exchange):
         Example
         -------
         >>> ticker = exchange.fetch_ticker('EUR/USD')
-        >>> __copilot_log_print(ticker['last'])
+        >>> print(ticker['last'])
         1.08542
         """
         today = datetime.date.today()

@@ -4,7 +4,8 @@ A **Jupyter notebook** that demonstrates how to backtest FX trading strategies
 using macroeconomic data from the **[FXMacroData API](https://fxmacrodata.com)**
 and the **[VectorBT](https://vectorbt.dev)** backtesting library.
 
-> **EUR/USD forex data and USD announcement indicators are public — no API key required.**  
+> **USD announcement indicators are public for the most recent 90 days. EUR/USD
+> forex data requires an API key.**  
 > Enter a [Professional API key](https://fxmacrodata.com/api-management) to
 > unlock protected non-USD announcements and the interest-rate carry strategy.
 

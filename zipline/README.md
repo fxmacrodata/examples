@@ -280,7 +280,7 @@ plt.show()
 
 | Data | Access |
 |---|---|
-| USD announcement indicators | **Public** — no key required |
+| USD announcement indicators | **Public** — no key required (most recent 90 days) |
 | FX spot rates (all pairs) | **Public** |
 | Non-USD announcement indicators | Professional plan |
 | Commodities | Professional plan |

@@ -6,7 +6,8 @@ data-loader helpers for every public FXMacroData endpoint plus a
 `KeylessExchange` factory that lets you run fully keyless backtests with
 no brokerage account required.
 
-> **The quick-start demo uses public endpoints only — no API key required.**
+> **USD announcement data is public for the most recent 90 days. EUR/USD spot
+> rates need an API key.**
 > Add a [Professional key](https://fxmacrodata.com/api-management) to unlock
 > protected non-USD announcements, COT positioning, and commodities data.
 

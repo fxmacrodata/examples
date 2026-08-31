@@ -154,7 +154,8 @@ real_rate = policy_rate (%) − inflation (%)
 | `real_rate < −0.5 pp` | Loose monetary policy → risk-on | **Long BTC/USDT** |
 | `real_rate > +0.5 pp` | Tight monetary policy → risk-off | **Exit long** |
 
-Both series are **free** — no API key required.
+USD announcement series are free for the most recent 90 days. FX spot rates and
+commodities require an API key.
 
 ### How it works
 

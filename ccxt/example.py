@@ -5,11 +5,13 @@ FXMacroData × CCXT — Carry Trade Scanner
 Uses the FXMacroData CCXT adapter to run a macro-driven carry-trade
 scanner over EUR/USD and GBP/USD, driven by USD CPI inflation momentum.
 
-All data in this demo is **free** — no API key required:
-  - EUR/USD and GBP/USD daily spot rates  (/v1/forex/)
-  - USD CPI inflation                     (/v1/announcements/usd/inflation)
-  - USD policy rate                       (/v1/announcements/usd/policy_rate)
-  - XAU/USD (gold) daily spot             (/v1/commodities/gold)
+Data used in this demo:
+  - EUR/USD and GBP/USD daily spot rates  (/v1/forex/, API key required)
+  - USD CPI inflation                     (/v1/announcements/usd/inflation, free)
+  - USD policy rate                       (/v1/announcements/usd/policy_rate, free)
+  - XAU/USD (gold) daily spot             (/v1/commodities/gold, API key required)
+
+The free USD announcement endpoints cover the most recent 90 days.
 
 Strategy logic
 --------------
@@ -32,19 +34,6 @@ Run
     python example.py --lookback 90 --no-gold
     python example.py --api-key YOUR_KEY      # unlock protected endpoints
 """
-import logging
-
-__copilot_logger = logging.getLogger(__name__)
-
-def __copilot_log_print(*args, sep=" ", end="\n", file=None, flush=False):
-    message = sep.join(str(arg) for arg in args)
-    if end and end != "\n":
-        message += end.rstrip("\n")
-    stream = file if file is not None else sys.stdout
-    level = logging.ERROR if stream is sys.stderr else logging.INFO
-    __copilot_logger.log(level, message)
-
-
 from __future__ import annotations
 
 import argparse
@@ -132,24 +121,24 @@ def run_scanner(
     macro_start = "2022-01-01"  # wide window for forward-fill accuracy
 
     # ── 1.  Load markets ─────────────────────────────────────────────────────
-    __copilot_log_print("Loading markets…")
+    print("Loading markets…")
     markets = exchange.load_markets()
     fx_symbols = [m["symbol"] for m in markets.values() if m["info"]["type"] == "forex"]
     comm_symbols = [
         m["symbol"] for m in markets.values() if m["info"]["type"] == "commodity"
     ]
-    __copilot_log_print(f"  {len(fx_symbols)} FX pairs  |  {len(comm_symbols)} commodity pairs\n")
+    print(f"  {len(fx_symbols)} FX pairs  |  {len(comm_symbols)} commodity pairs\n")
 
     # ── 2.  Current FX rates (standard CCXT fetch_tickers) ───────────────────
     scan_pairs = ["EUR/USD", "GBP/USD", "AUD/USD", "USD/JPY", "USD/CHF", "USD/CAD"]
     if show_gold:
         scan_pairs.append("XAU/USD")
 
-    __copilot_log_print(f"Fetching current rates for {len(scan_pairs)} symbols…")
+    print(f"Fetching current rates for {len(scan_pairs)} symbols…")
     tickers = exchange.fetch_tickers(scan_pairs)
 
     # ── 3.  EUR/USD historical OHLCV (standard CCXT fetch_ohlcv) ─────────────
-    __copilot_log_print("Fetching EUR/USD OHLCV…")
+    print("Fetching EUR/USD OHLCV…")
     eurusd_since = int(
         datetime.datetime(
             *map(int, start.split("-")),
@@ -161,11 +150,11 @@ def run_scanner(
     eurusd = _ohlcv_to_series(eurusd_ohlcv)
 
     # ── 4.  Macro indicators (custom extension) ───────────────────────────────
-    __copilot_log_print("Fetching USD CPI inflation…")
+    print("Fetching USD CPI inflation…")
     infl_rows = exchange.fetch_macro_indicator("USD", "inflation", macro_start, today)
     inflation = _indicator_series(infl_rows)
 
-    __copilot_log_print("Fetching USD policy rate…")
+    print("Fetching USD policy rate…")
     rate_rows = exchange.fetch_macro_indicator("USD", "policy_rate", macro_start, today)
     policy_rate = _indicator_series(rate_rows)
 
@@ -203,28 +192,28 @@ def run_scanner(
 
 
 def _banner() -> None:
-    __copilot_log_print()
-    __copilot_log_print("FXMacroData × CCXT — Macro Carry Scanner")
-    __copilot_log_print("─" * 56)
-    __copilot_log_print("  All data via standard CCXT interface")
-    __copilot_log_print("  EUR/USD, GBP/USD, XAU/USD  ·  USD inflation & policy rate")
-    __copilot_log_print("  No API key required — USD data is always free")
-    __copilot_log_print()
+    print()
+    print("FXMacroData × CCXT — Macro Carry Scanner")
+    print("─" * 56)
+    print("  All data via standard CCXT interface")
+    print("  EUR/USD, GBP/USD, XAU/USD  ·  USD inflation & policy rate")
+    print("  USD announcements free for 90 days; FX and gold need an API key")
+    print()
 
 
 def _print_rates(tickers: dict, symbols: list[str]) -> None:
-    __copilot_log_print()
-    __copilot_log_print("─" * 56)
-    __copilot_log_print(f"  {'Symbol':<12}  {'Last rate':>12}  {'1d change':>10}")
-    __copilot_log_print("─" * 56)
+    print()
+    print("─" * 56)
+    print(f"  {'Symbol':<12}  {'Last rate':>12}  {'1d change':>10}")
+    print("─" * 56)
     for sym in symbols:
         t = tickers.get(sym)
         if not t:
             continue
         last = _fmt_rate(t["last"])
         chg = _fmt_pct(t["percentage"])
-        __copilot_log_print(f"  {sym:<12}  {last:>12}  {chg:>10}")
-    __copilot_log_print("─" * 56)
+        print(f"  {sym:<12}  {last:>12}  {chg:>10}")
+    print("─" * 56)
 
 
 def _print_macro(
@@ -247,29 +236,29 @@ def _print_macro(
     if len(rate_clean) >= 132:
         rate_6m_delta = float(rate_clean.iloc[-1]) - float(rate_clean.iloc[-132])
 
-    __copilot_log_print()
-    __copilot_log_print("  Macro snapshot (USD, latest released values)")
-    __copilot_log_print("─" * 56)
-    __copilot_log_print(f"  CPI inflation (YoY)      : {inflation:>7.2f} %")
+    print()
+    print("  Macro snapshot (USD, latest released values)")
+    print("─" * 56)
+    print(f"  CPI inflation (YoY)      : {inflation:>7.2f} %")
     if infl_3m_delta is not None:
-        __copilot_log_print(f"  Inflation 3m momentum    : {infl_3m_delta:>+7.2f} pp")
-    __copilot_log_print(f"  Fed policy rate          : {policy_rate:>7.2f} %")
+        print(f"  Inflation 3m momentum    : {infl_3m_delta:>+7.2f} pp")
+    print(f"  Fed policy rate          : {policy_rate:>7.2f} %")
     if rate_6m_delta is not None:
-        __copilot_log_print(f"  Rate 6m change           : {rate_6m_delta:>+7.2f} pp")
-    __copilot_log_print(f"  USD real rate (rate-CPI) : {real_rate:>+7.2f} pp")
-    __copilot_log_print(f"  EUR/USD vs 20d MA        : {fx_momentum:>+7.2f} %")
-    __copilot_log_print("─" * 56)
+        print(f"  Rate 6m change           : {rate_6m_delta:>+7.2f} pp")
+    print(f"  USD real rate (rate-CPI) : {real_rate:>+7.2f} pp")
+    print(f"  EUR/USD vs 20d MA        : {fx_momentum:>+7.2f} %")
+    print("─" * 56)
 
 
 def _print_signal(signal: str, icon: str, rationale: str) -> None:
-    __copilot_log_print()
-    __copilot_log_print(f"  Signal  {icon}  {signal}")
-    __copilot_log_print(f"  Why       {rationale}")
-    __copilot_log_print()
-    __copilot_log_print("  Note: this is a macro scanner, not a backtested strategy.")
-    __copilot_log_print("  For full backtesting, see the Backtrader and Zipline examples.")
-    __copilot_log_print(f"  Docs & Pro key → https://fxmacrodata.com/api-management")
-    __copilot_log_print()
+    print()
+    print(f"  Signal  {icon}  {signal}")
+    print(f"  Why       {rationale}")
+    print()
+    print("  Note: this is a macro scanner, not a backtested strategy.")
+    print("  For full backtesting, see the Backtrader and Zipline examples.")
+    print(f"  Docs & Pro key → https://fxmacrodata.com/api-management")
+    print()
 
 
 # ─── CLI ─────────────────────────────────────────────────────────────────────
@@ -300,7 +289,7 @@ def _cli() -> argparse.Namespace:
         default=None,
         dest="api_key",
         help=(
-            "FXMacroData Professional API key " "(optional — USD data is always free)"
+            "FXMacroData API key (required for FX spot rates and commodities)"
         ),
     )
     return p.parse_args()
@@ -315,5 +304,5 @@ if __name__ == "__main__":
             api_key=args.api_key,
         )
     except Exception as exc:
-        __copilot_log_print(f"\nError: {exc}", file=sys.stderr)
+        print(f"\nError: {exc}", file=sys.stderr)
         sys.exit(1)

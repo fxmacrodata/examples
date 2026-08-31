@@ -26,7 +26,7 @@ FXMacroData × CCXT — Macro Carry Scanner
 ────────────────────────────────────────────────────────
   All data via standard CCXT interface
   EUR/USD, GBP/USD, XAU/USD  ·  USD inflation & policy rate
-  No API key required — USD data is always free
+  USD announcements free for 90 days; FX and gold need an API key
 
 Loading markets…
   30 FX pairs  |  3 commodity pairs

@@ -46,20 +46,6 @@ To unlock protected non-USD announcements and commodities, pass
 environment variable.
 Get a key at https://fxmacrodata.com/api-management
 """
-import logging
-import sys
-
-__copilot_logger = logging.getLogger(__name__)
-
-def __copilot_log_print(*args, sep=" ", end="\n", file=None, flush=False):
-    message = sep.join(str(arg) for arg in args)
-    if end and end != "\n":
-        message += end.rstrip("\n")
-    stream = file if file is not None else sys.stdout
-    level = logging.ERROR if stream is sys.stderr else logging.INFO
-    __copilot_logger.log(level, message)
-
-
 from __future__ import annotations
 
 import os
@@ -403,7 +389,7 @@ def register_fxmacrodata_bundle(
                 try:
                     df = fetch_forex(base, quote, _start, _end, api_key=_key)
                 except Exception as exc:  # noqa: BLE001
-                    __copilot_log_print(f"  Warning: could not fetch {pair}: {exc}")
+                    print(f"  Warning: could not fetch {pair}: {exc}")
                     continue
 
                 # Align to valid calendar sessions; forward-fill weekend gaps
@@ -460,6 +446,6 @@ def ingest_fxmacrodata_bundle(
             "Install it with:  pip install zipline-reloaded"
         ) from exc
 
-    __copilot_log_print(f"Ingesting bundle '{bundle_name}' from FXMacroData…")
+    print(f"Ingesting bundle '{bundle_name}' from FXMacroData…")
     ingest(bundle_name, os.environ, show_progress=show_progress)
-    __copilot_log_print(f"Bundle '{bundle_name}' ingested successfully.")
+    print(f"Bundle '{bundle_name}' ingested successfully.")
