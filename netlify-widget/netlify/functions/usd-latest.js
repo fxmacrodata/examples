@@ -1,4 +1,4 @@
-const API_URL = 'https://fxmacrodata.com/api/v1/announcements/usd/latest';
+const API_URL = 'https://api.fxmacrodata.com/v1/announcements/usd/latest';
 
 exports.handler = async () => {
   try {

@@ -169,7 +169,7 @@ re-downloading the file before each session start.
 | Non-USD announcement indicators | Professional plan |
 | COT positioning | Professional plan |
 
-[Get your API key →](https://fxmacrodata.com/api-management)
+[Get your API key →](https://api.fxmacrodata.com-management)
 
 Set the key as an environment variable:
 
@@ -238,6 +238,6 @@ See [fxmacrodata.com/documentation](https://fxmacrodata.com/documentation) for t
 
 - 🌐 [FXMacroData Website](https://fxmacrodata.com)
 - 📖 [API Documentation](https://fxmacrodata.com/documentation)
-- 🔑 [Get your API key](https://fxmacrodata.com/api-management)
+- 🔑 [Get your API key](https://api.fxmacrodata.com-management)
 - 📊 [QuantConnect](https://www.quantconnect.com)
 - 🚀 [LEAN Engine](https://lean.io)

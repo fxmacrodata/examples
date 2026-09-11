@@ -6,9 +6,9 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [sources]
 Fastback = {url = "https://github.com/rbeeli/Fastback.jl", rev = "3981c33610c97c97b61daca2631d73fdc0bc5b75"}
-FXMacroData = {url = "https://github.com/fxmacrodata/FXMacroData.jl", rev = "5e1def28fc23546c0a949d54a79ca30ec85ca01d"}
+FXMacroData = {url = "https://github.com/fxmacrodata/FXMacroData.jl", rev = "14ee5fea879765e5e66579b4165741b11b9f07e8"}
 
 [compat]
 Fastback = "0.9"
-FXMacroData = "0.1"
+FXMacroData = "0.2"
 julia = "1.11"

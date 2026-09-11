@@ -58,7 +58,7 @@ USD announcement indicators are public. Non-USD announcement indicators,
 commodities, and COT data require a Professional API key. Pass it explicitly
 via ``api_key=`` or set the ``FXMACRODATA_API_KEY`` environment variable.
 
-Get your key at https://fxmacrodata.com/api-management
+Get your key at https://api.fxmacrodata.com-management
 """
 
 from __future__ import annotations
@@ -68,9 +68,9 @@ from typing import List, Optional, Union
 
 import pandas as pd
 
-_API_BASE = "https://fxmacrodata.com/api/v1"
+_API_BASE = "https://api.fxmacrodata.com/v1"
 _DOCS_URL = "https://fxmacrodata.com/documentation"
-_API_KEYS_URL = "https://fxmacrodata.com/api-management"
+_API_KEYS_URL = "https://api.fxmacrodata.com-management"
 
 # Precious-metal symbols handled by the /v1/commodities/ endpoint
 _COMMODITY_SYMBOLS = frozenset({"gold", "silver", "platinum"})
@@ -95,7 +95,7 @@ def _resolve_api_key(explicit: Optional[str]) -> Optional[str]:
     return explicit or os.environ.get("FXMACRODATA_API_KEY") or None
 
 
-def _get(session, url: str, params: dict, timeout: int = 30) -> dict:
+def _get(session, url: str, params: dict, timeout: int = 30, headers=None) -> dict:
     """Execute a GET and return the parsed JSON body.
 
     Raises
@@ -107,7 +107,7 @@ def _get(session, url: str, params: dict, timeout: int = 30) -> dict:
     OSError
         For any other non-200 response.
     """
-    resp = session.get(url, params=params, timeout=timeout)
+    resp = session.get(url, params=params, headers=headers or {}, timeout=timeout)
     if resp.status_code == 401:
         raise PermissionError(
             "A Professional API key is required for this resource. "
@@ -239,9 +239,11 @@ class _FXMacroDataBaseReader:
             "start_date": self._start_str,
             "end_date": self._end_str,
         }
-        if self.api_key:
-            params["api_key"] = self.api_key
         return params
+
+    def _auth_headers(self) -> dict:
+        """Send the key as a header; a key in the URL is logged by proxies."""
+        return {"X-API-Key": self.api_key} if self.api_key else {}
 
     def close(self):
         """Close the underlying requests session."""
@@ -300,7 +302,7 @@ class FXMacroDataIndicatorReader(_FXMacroDataBaseReader):
     def _fetch_one(self, symbol: str) -> pd.DataFrame:
         currency, indicator = _parse_indicator_symbol(symbol)
         url = f"{_API_BASE}/announcements/{currency.lower()}/{indicator}"
-        payload = _get(self.session, url, self._base_params())
+        payload = _get(self.session, url, self._base_params(), headers=self._auth_headers())
         rows = payload.get("data", [])
         if not rows:
             return pd.DataFrame(
@@ -362,7 +364,7 @@ class FXMacroDataForexReader(_FXMacroDataBaseReader):
     def _fetch_one(self, symbol: str) -> pd.DataFrame:
         base, quote = _parse_forex_symbol(symbol)
         url = f"{_API_BASE}/forex/{base.lower()}/{quote.lower()}"
-        payload = _get(self.session, url, self._base_params())
+        payload = _get(self.session, url, self._base_params(), headers=self._auth_headers())
         rows = payload.get("data", [])
         if not rows:
             return pd.DataFrame(columns=["val"])
@@ -428,7 +430,7 @@ class FXMacroDataCommoditiesReader(_FXMacroDataBaseReader):
                 f"Supported values: {sorted(_COMMODITY_SYMBOLS)}."
             )
         url = f"{_API_BASE}/commodities/{sym_lower}"
-        payload = _get(self.session, url, self._base_params())
+        payload = _get(self.session, url, self._base_params(), headers=self._auth_headers())
         rows = payload.get("data", [])
         if not rows:
             return pd.DataFrame(columns=["val", "pct_change", "pct_change_12m"])
@@ -501,7 +503,7 @@ class FXMacroDataCOTReader(_FXMacroDataBaseReader):
     def _fetch_one(self, symbol: str) -> pd.DataFrame:
         currency = symbol.upper()
         url = f"{_API_BASE}/cot/{currency.lower()}"
-        payload = _get(self.session, url, self._base_params())
+        payload = _get(self.session, url, self._base_params(), headers=self._auth_headers())
         rows = payload.get("data", [])
         if not rows:
             return pd.DataFrame(columns=self._COT_COLS)

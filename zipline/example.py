@@ -5,7 +5,8 @@ FXMacroData — Zipline Example
 Policy Rate Divergence Strategy: trade EUR/USD based on central-bank rate
 differentials between the US Federal Reserve and the ECB.
 
-All data used in this demo is **free** — no API key required:
+Data used in this demo (USD announcements are free for the most recent
+90 days; FX spot rates and commodities require an API key):
   - FXMacroData bundle           — EUR/USD daily spot rates
   - /v1/announcements/usd/policy_rate   — Fed Funds Rate
   - /v1/announcements/eur/policy_rate   — ECB Main Refinancing Rate
@@ -36,19 +37,6 @@ Run
     python example.py --api-key YOUR_KEY
     python example.py --no-ingest   # skip ingestion if bundle already cached
 """
-import logging
-
-__copilot_logger = logging.getLogger(__name__)
-
-def __copilot_log_print(*args, sep=" ", end="\n", file=None, flush=False):
-    message = sep.join(str(arg) for arg in args)
-    if end and end != "\n":
-        message += end.rstrip("\n")
-    stream = file if file is not None else sys.stdout
-    level = logging.ERROR if stream is sys.stderr else logging.INFO
-    __copilot_logger.log(level, message)
-
-
 from __future__ import annotations
 
 import argparse
@@ -223,7 +211,7 @@ def run_backtest(
         ingest_fxmacrodata_bundle(bundle_name=_BUNDLE_NAME)
 
     # ── Step 2: Fetch macro signals ────────────────────────────────────────────
-    __copilot_log_print("Fetching USD policy rate from FXMacroData…")
+    print("Fetching USD policy rate from FXMacroData…")
     usd_rate = fetch_indicator(
         "USD",
         "policy_rate",
@@ -232,7 +220,7 @@ def run_backtest(
         api_key=api_key,
     )
 
-    __copilot_log_print("Fetching EUR policy rate from FXMacroData…")
+    print("Fetching EUR policy rate from FXMacroData…")
     try:
         eur_rate = fetch_indicator(
             "EUR",
@@ -242,7 +230,7 @@ def run_backtest(
             api_key=api_key,
         )
     except PermissionError:
-        __copilot_log_print(
+        print(
             "\nNote: EUR policy rate requires a Professional API key.\n"
             "Falling back to USD inflation as the signal instead.\n"
             f"Get a key at {__import__('fxmacrodata_zipline').API_KEYS_URL}\n"
@@ -260,7 +248,7 @@ def run_backtest(
     # ── Step 3: Build strategy and run ────────────────────────────────────────
     initialize, handle_data, analyze = _make_strategy(eur_rate, usd_rate)
 
-    __copilot_log_print(f"\nStarting backtest: {start} → {end}\n")
+    print(f"\nStarting backtest: {start} → {end}\n")
     perf = run_algorithm(
         start=pd.Timestamp(start, tz="UTC"),
         end=pd.Timestamp(end, tz="UTC"),
@@ -278,21 +266,21 @@ def run_backtest(
 
 
 def _banner(start: str, end: str, cash: float) -> None:
-    __copilot_log_print()
-    __copilot_log_print("FXMacroData × Zipline — Policy Rate Divergence Strategy")
-    __copilot_log_print("─" * 62)
-    __copilot_log_print(f"  Period         : {start} → {end}")
-    __copilot_log_print(f"  Initial cash   : ${cash:,.0f}")
-    __copilot_log_print(f"  Instrument     : EUR/USD spot (FXMacroData bundle)")
-    __copilot_log_print(f"  Signal         : EUR vs USD central-bank rate differential")
-    __copilot_log_print(f"  Dead-band      : ±{_DEAD_BAND} pp")
-    __copilot_log_print(f"  Rebalance freq : every {_REBAL_FREQ} trading days (≈ 1 month)")
-    __copilot_log_print()
+    print()
+    print("FXMacroData × Zipline — Policy Rate Divergence Strategy")
+    print("─" * 62)
+    print(f"  Period         : {start} → {end}")
+    print(f"  Initial cash   : ${cash:,.0f}")
+    print(f"  Instrument     : EUR/USD spot (FXMacroData bundle)")
+    print(f"  Signal         : EUR vs USD central-bank rate differential")
+    print(f"  Dead-band      : ±{_DEAD_BAND} pp")
+    print(f"  Rebalance freq : every {_REBAL_FREQ} trading days (≈ 1 month)")
+    print()
 
 
 def _print_results(perf: pd.DataFrame) -> None:
     if perf.empty:
-        __copilot_log_print("No results to display.")
+        print("No results to display.")
         return
 
     final_value = perf["portfolio_value"].iloc[-1]
@@ -311,23 +299,23 @@ def _print_results(perf: pd.DataFrame) -> None:
     dd = (perf["portfolio_value"] - roll_max) / roll_max
     max_dd = dd.min() * 100.0
 
-    __copilot_log_print()
-    __copilot_log_print("─" * 62)
-    __copilot_log_print("RESULTS")
-    __copilot_log_print("─" * 62)
-    __copilot_log_print(f"  Final portfolio value  : ${final_value:>12,.2f}")
-    __copilot_log_print(f"  Total return           : {total_return:>+11.2f}%")
+    print()
+    print("─" * 62)
+    print("RESULTS")
+    print("─" * 62)
+    print(f"  Final portfolio value  : ${final_value:>12,.2f}")
+    print(f"  Total return           : {total_return:>+11.2f}%")
     if not math.isnan(sharpe):
-        __copilot_log_print(f"  Sharpe ratio (ann.)    : {sharpe:>12.3f}")
-    __copilot_log_print(f"  Max drawdown           : {max_dd:>11.2f}%")
+        print(f"  Sharpe ratio (ann.)    : {sharpe:>12.3f}")
+    print(f"  Max drawdown           : {max_dd:>11.2f}%")
 
     # Trade count from orders
     if "orders" in perf.columns:
         n_orders = sum(len(o) for o in perf["orders"] if o)
-        __copilot_log_print(f"  Total orders placed    : {n_orders:>12}")
+        print(f"  Total orders placed    : {n_orders:>12}")
 
-    __copilot_log_print("─" * 62)
-    __copilot_log_print()
+    print("─" * 62)
+    print()
 
 
 # ─── CLI entry point ──────────────────────────────────────────────────────────
@@ -382,11 +370,11 @@ if __name__ == "__main__":
             skip_ingest=args.no_ingest,
         )
     except PermissionError as exc:
-        __copilot_log_print(f"\nError: {exc}", file=sys.stderr)
+        print(f"\nError: {exc}", file=sys.stderr)
         sys.exit(1)
     except ValueError as exc:
-        __copilot_log_print(f"\nError: {exc}", file=sys.stderr)
+        print(f"\nError: {exc}", file=sys.stderr)
         sys.exit(1)
     except KeyboardInterrupt:
-        __copilot_log_print("\nInterrupted.", file=sys.stderr)
+        print("\nInterrupted.", file=sys.stderr)
         sys.exit(1)

@@ -6,7 +6,7 @@ This integration provides a Zipline bundle for FX spot rates and three
 DataFrame loader functions for macro indicators, FX, and commodities.
 
 > **The public demo paths use FX rates and USD announcements, so they run without an API key.**
-> Add a [Professional key](https://fxmacrodata.com/api-management) to unlock
+> Add a [Professional key](https://api.fxmacrodata.com-management) to unlock
 > protected non-USD announcements, COT positioning, and commodities data.
 
 ---
@@ -280,14 +280,14 @@ plt.show()
 
 | Data | Access |
 |---|---|
-| USD announcement indicators | **Public** — no key required |
+| USD announcement indicators | **Public** — no key required (most recent 90 days) |
 | FX spot rates (all pairs) | **Public** |
 | Non-USD announcement indicators | Professional plan |
 | Commodities | Professional plan |
 | COT positioning | Professional plan |
 | Release calendars | **Public** |
 
-[Get your API key →](https://fxmacrodata.com/api-management)
+[Get your API key →](https://api.fxmacrodata.com-management)
 
 Set the key as an environment variable (picked up automatically):
 
@@ -328,6 +328,6 @@ df = fetch_indicator("EUR", "inflation", "2020-01-01", "2025-12-31",
 
 - [FXMacroData](https://fxmacrodata.com)
 - [API Documentation](https://fxmacrodata.com/documentation)
-- [Get an API key](https://fxmacrodata.com/api-management)
+- [Get an API key](https://api.fxmacrodata.com-management)
 - [zipline-reloaded docs](https://zipline.ml4trading.io)
 - [exchange-calendars](https://github.com/gerrymanoim/exchange_calendars)

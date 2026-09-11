@@ -24,8 +24,8 @@ import plotly.graph_objects as go
 import requests
 from dash import Dash, Input, Output, State, dash_table, dcc, html
 
-API_BASE = "https://fxmacrodata.com/api/v1"
-API_MANAGEMENT_URL = "https://fxmacrodata.com/api-management"
+API_BASE = "https://api.fxmacrodata.com/v1"
+API_MANAGEMENT_URL = "https://api.fxmacrodata.com-management"
 DOCS_URL = "https://fxmacrodata.com/documentation"
 
 FREE_CURRENCY = "USD"
@@ -116,13 +116,13 @@ def fetch_series(
         return cached
 
     params: dict[str, str] = {"start_date": start_date, "end_date": end_date}
-    if api_key:
-        params["api_key"] = api_key
+    headers = {"X-API-Key": api_key} if api_key else {}
 
     try:
         response = requests.get(
             f"{API_BASE}/announcements/{currency.lower()}/{indicator}",
             params=params,
+            headers=headers,
             timeout=10,
         )
     except requests.exceptions.RequestException:

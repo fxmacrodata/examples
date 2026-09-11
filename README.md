@@ -1,63 +1,36 @@
 # FXMacroData Examples Hub
 
-This directory is the source bundle for the public examples repository:
-https://github.com/fxmacrodata/examples
+Build macroeconomic research apps, dashboards and trading workflows with FXMacroData. These runnable projects show how to use official economic observations, release calendars and market data across Python, web and backtesting frameworks.
 
-Use these projects to publish demos across app stores, template directories,
-and hosting platforms so developers discover FXMacroData quickly and then move
-to a paid plan at:
+[Subscribe to FXMacroData](https://fxmacrodata.com/subscribe?utm_source=github&utm_medium=referral&utm_campaign=open_source_integrations&utm_content=examples_subscribe) for non-USD data, full available history, FX, commodities and positioning. Use the public USD workflow to evaluate these projects before connecting your subscription.
 
-- https://fxmacrodata.com/subscribe
-
-> Public endpoints (USD announcements, calendar, market sessions,
-> data catalogue) can be used without an API key.
-> Protected endpoints (non-USD announcements, FX spot history, COT,
-> commodities) require a paid key from the subscribe flow.
+Public USD catalogue, recent macro history and calendar queries support evaluation without an API key. Protected datasets require a key from an authorized FXMacroData subscription.
 
 ---
 
 ## Deployable app matrix
 
-| App | Framework | Hosted on | Live URL |
-|---|---|---|---|
-| Central Bank Rate Monitor | Streamlit | Streamlit Community Cloud | _deploy link_ |
-| FX Trade Setup Studio | Web (Vanilla JS) | GitHub Pages / Netlify / Vercel Static | _deploy link_ |
-| FX & Macro Explorer | Gradio | Hugging Face Spaces | _deploy link_ |
-| FX Macro Heatmap | Plotly Dash | Render | _deploy link_ |
-| Conversational FX Macro Monitor | Plotly Dash + Dash MCP | Render | _deploy link_ |
-| Macro Intelligence Dashboard | HoloViz Panel | Hugging Face Spaces | _deploy link_ |
-| FX Market Intelligence | Next.js | Vercel | _deploy link_ |
-| USD Macro Snapshot API | FastAPI | Railway/Render/Fly.io | _deploy link_ |
-| USD Macro Landing App | Flask | Render/Railway | _deploy link_ |
-| Edge Macro Widget Proxy | Cloudflare Worker | Cloudflare | _deploy link_ |
-| Netlify Macro Widget | Netlify Functions + static | Netlify | _deploy link_ |
-| Policy Rate Divergence | Backtrader | Local script | — |
-| Policy Rate Divergence | Zipline | Local script | — |
-| Macro Signal (BTC/USDT) | Freqtrade | Local strategy | — |
-| FX Strategy Backtesting | VectorBT (Jupyter) | Run locally / JupyterHub | — |
-| Macro Data Access | pandas-datareader | Local script | — |
-| Macro Carry Scanner | CCXT | Local script | — |
-| Carry Rebalance Bot | Blankly | Local strategy | — |
-| Release-Aware EUR/USD Backtest | Julia + Fastback.jl | Local script | — |
-
-## Distribution-first publishing loop
-
-1. Launch each app in the public examples repo.
-2. Add a visible CTA to https://fxmacrodata.com/subscribe in app header/footer.
-3. Submit links to framework galleries and community indexes.
-4. Add badges/screenshots to this README once each app is live.
-
-Suggested distribution targets:
-
-- Vercel templates
-- Streamlit gallery
-- Hugging Face Spaces
-- Netlify templates/examples
-- Cloudflare Worker examples
-- Plotly Dash Show and Tell
-- Reddit (`r/algotrading`, `r/quant`, `r/forex`) and X build threads
-
----
+| App | Framework | Hosted on |
+|---|---|---|
+| Central Bank Rate Monitor | Streamlit | Streamlit Community Cloud |
+| FX Trade Setup Studio | Web (Vanilla JS) | GitHub Pages / Netlify / Vercel Static |
+| FX & Macro Explorer | Gradio | Hugging Face Spaces |
+| FX Macro Heatmap | Plotly Dash | Render |
+| Conversational FX Macro Monitor | Plotly Dash + Dash MCP | Render |
+| Macro Intelligence Dashboard | HoloViz Panel | Hugging Face Spaces |
+| FX Market Intelligence | Next.js | Vercel |
+| USD Macro Snapshot API | FastAPI | Railway/Render/Fly.io |
+| USD Macro Landing App | Flask | Render/Railway |
+| Edge Macro Widget Proxy | Cloudflare Worker | Cloudflare |
+| Netlify Macro Widget | Netlify Functions + static | Netlify |
+| Policy Rate Divergence | Backtrader | Local script |
+| Policy Rate Divergence | Zipline | Local script |
+| Macro Signal (BTC/USDT) | Freqtrade | Local strategy |
+| FX Strategy Backtesting | VectorBT (Jupyter) | Run locally / JupyterHub |
+| Macro Data Access | pandas-datareader | Local script |
+| Macro Carry Scanner | CCXT | Local script |
+| Carry Rebalance Bot | Blankly | Local strategy |
+| Release-Aware EUR/USD Backtest | Julia + Fastback.jl | Local script |
 
 ## Key safety policy (required)
 
@@ -169,10 +142,6 @@ cd vectorbt && pip install -r requirements.txt && jupyter notebook fxmacrodata_v
 
 # CCXT macro scanner
 cd ccxt      && pip install -r requirements.txt && python example.py
-
-# Julia + Fastback.jl release-aware EUR/USD backtest (Julia 1.11+)
-cd julia && julia --project -e 'using Pkg; Pkg.instantiate()'
-julia --project fastback_release_aware_backtest.jl
 
 # Next.js app
 cd vercel && npm install && npm run dev
@@ -323,4 +292,3 @@ Full reference: [fxmacrodata.com/documentation](https://fxmacrodata.com/document
 - [API management](https://fxmacrodata.com/api-management)
 - [Public examples repository](https://github.com/fxmacrodata/examples)
 - [Security and key policy](./SECURITY_AND_KEYS.md)
-- [Public repo publishing playbook](./PUBLIC_REPO_PUBLISHING_PLAYBOOK.md)

@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const API_KEYS_URL = 'https://fxmacrodata.com/api-management';
+const API_KEYS_URL = 'https://api.fxmacrodata.com-management';
 
 const CURRENCIES = [
   { code: 'EUR', flag: '🇪🇺', label: 'Euro' },

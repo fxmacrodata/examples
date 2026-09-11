@@ -37,7 +37,7 @@ USD announcement data is public — no key required.
     * Local LEAN:          export FXMACRODATA_API_KEY=your_key_here
 
 Full indicator catalogue: https://fxmacrodata.com/documentation
-API key management:       https://fxmacrodata.com/api-management
+API key management:       https://api.fxmacrodata.com-management
 """
 
 from __future__ import annotations
@@ -72,7 +72,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-_API_BASE = "https://fxmacrodata.com/api/v1"
+_API_BASE = "https://api.fxmacrodata.com/v1"
 _DEFAULT_START = "1990-01-01"
 
 
@@ -100,9 +100,8 @@ def _data_root() -> Path:
 
 def _fetch_json(url: str, params: dict) -> dict:
     key = _api_key()
-    if key:
-        params = {**params, "api_key": key}
-    resp = requests.get(url, params=params, timeout=30)
+    headers = {"X-API-Key": key} if key else {}
+    resp = requests.get(url, params=params, headers=headers, timeout=30)
     resp.raise_for_status()
     return resp.json()
 

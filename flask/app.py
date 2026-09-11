@@ -6,7 +6,7 @@ from flask import Flask, render_template_string
 
 app = Flask(__name__)
 
-API_BASE = "https://fxmacrodata.com/api/v1"
+API_BASE = "https://api.fxmacrodata.com/v1"
 SUBSCRIBE_URL = "https://fxmacrodata.com/subscribe"
 DOCS_URL = "https://fxmacrodata.com/documentation"
 

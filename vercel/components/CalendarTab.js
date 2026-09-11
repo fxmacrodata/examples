@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
-const API_KEYS_URL = 'https://fxmacrodata.com/api-management';
+const API_KEYS_URL = 'https://api.fxmacrodata.com-management';
 
 const CURRENCIES = [
   { code: 'USD', flag: '🇺🇸', free: true },

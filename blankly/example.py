@@ -5,7 +5,8 @@ FXMacroData — Blankly Example
 Inflation Signal Strategy: trade EUR/USD based on the direction of
 US CPI inflation using blankly's event-based backtesting engine.
 
-All data used in this demo is **free** — no API key required:
+Data used in this demo (USD announcements are free for the most recent
+90 days; FX spot rates and commodities require an API key):
   - /v1/forex/eur/usd                  — EUR/USD daily spot rates
   - /v1/announcements/usd/inflation    — US CPI Inflation (YoY %)
 
@@ -28,19 +29,6 @@ Run
     python example.py --start 2024-01-01 --end 2025-12-31
     python example.py --api-key YOUR_KEY      # unlock protected non-USD data
 """
-import logging
-
-__copilot_logger = logging.getLogger(__name__)
-
-def __copilot_log_print(*args, sep=" ", end="\n", file=None, flush=False):
-    message = sep.join(str(arg) for arg in args)
-    if end and end != "\n":
-        message += end.rstrip("\n")
-    stream = file if file is not None else sys.stdout
-    level = logging.ERROR if stream is sys.stderr else logging.INFO
-    __copilot_logger.log(level, message)
-
-
 from __future__ import annotations
 
 import argparse
@@ -167,10 +155,10 @@ def run_backtest(
         datetime.date.fromisoformat(start) - datetime.timedelta(days=130)
     ).isoformat()
 
-    __copilot_log_print("Fetching EUR/USD spot rates from FXMacroData…")
+    print("Fetching EUR/USD spot rates from FXMacroData…")
     exchange = create_exchange("EUR", "USD", data_start, end, api_key=api_key)
 
-    __copilot_log_print("Fetching USD CPI inflation from FXMacroData…")
+    print("Fetching USD CPI inflation from FXMacroData…")
     inflation_df = fetch_indicator("USD", "inflation", data_start, end, api_key=api_key)
 
     # ── Strategy setup ─────────────────────────────────────────────────────────
@@ -190,7 +178,7 @@ def run_backtest(
     )
 
     # ── Run ────────────────────────────────────────────────────────────────────
-    __copilot_log_print(f"\nStarting portfolio value: ${initial_cash:,.2f}\n")
+    print(f"\nStarting portfolio value: ${initial_cash:,.2f}\n")
     results = strategy.backtest(
         start_date=start,
         end_date=end,
@@ -205,25 +193,25 @@ def run_backtest(
 
 
 def _banner(start: str, end: str, cash: float) -> None:
-    __copilot_log_print()
-    __copilot_log_print("FXMacroData × Blankly — Inflation Signal Strategy")
-    __copilot_log_print("─" * 62)
-    __copilot_log_print(f"  Period         : {start} → {end}")
-    __copilot_log_print(f"  Initial cash   : ${cash:,.0f}")
-    __copilot_log_print(f"  Instrument     : EUR/USD spot")
-    __copilot_log_print(f"  Signal         : USD CPI inflation 3-month momentum (free data)")
-    __copilot_log_print(f"  Lookback       : {_LOOKBACK_DAYS} business days (≈ 3 months)")
-    __copilot_log_print(f"  Threshold      : ±{_THRESHOLD} pp")
-    __copilot_log_print()
+    print()
+    print("FXMacroData × Blankly — Inflation Signal Strategy")
+    print("─" * 62)
+    print(f"  Period         : {start} → {end}")
+    print(f"  Initial cash   : ${cash:,.0f}")
+    print(f"  Instrument     : EUR/USD spot")
+    print(f"  Signal         : USD CPI inflation 3-month momentum (free data)")
+    print(f"  Lookback       : {_LOOKBACK_DAYS} business days (≈ 3 months)")
+    print(f"  Threshold      : ±{_THRESHOLD} pp")
+    print()
 
 
 def _print_results(results, initial_cash: float) -> None:
     import math
 
-    __copilot_log_print()
-    __copilot_log_print("─" * 62)
-    __copilot_log_print("RESULTS")
-    __copilot_log_print("─" * 62)
+    print()
+    print("─" * 62)
+    print("RESULTS")
+    print("─" * 62)
 
     try:
         # blankly returns a dict with a 'returns' key and a metrics DataFrame
@@ -233,29 +221,29 @@ def _print_results(results, initial_cash: float) -> None:
         final_value = portfolio.get("portfolio_value", initial_cash)
         total_return = (final_value / initial_cash - 1.0) * 100.0
 
-        __copilot_log_print(f"  Final portfolio value  : ${final_value:>12,.2f}")
-        __copilot_log_print(f"  Total return           : {total_return:>+11.2f}%")
+        print(f"  Final portfolio value  : ${final_value:>12,.2f}")
+        print(f"  Total return           : {total_return:>+11.2f}%")
 
         sharpe = metrics.get("sharpe", None)
         if sharpe is not None and not (
             isinstance(sharpe, float) and math.isnan(sharpe)
         ):
-            __copilot_log_print(f"  Sharpe ratio           : {float(sharpe):>12.3f}")
+            print(f"  Sharpe ratio           : {float(sharpe):>12.3f}")
 
         max_dd = metrics.get("max_drawdown", None)
         if max_dd is not None:
-            __copilot_log_print(f"  Max drawdown           : {float(max_dd) * 100:>11.2f}%")
+            print(f"  Max drawdown           : {float(max_dd) * 100:>11.2f}%")
 
         trades = metrics.get("trades", None)
         if trades is not None:
-            __copilot_log_print(f"  Total trades           : {int(trades):>12}")
+            print(f"  Total trades           : {int(trades):>12}")
 
     except (AttributeError, TypeError, KeyError, ValueError, ZeroDivisionError):
         # blankly result format can vary by version — print the raw object
-        __copilot_log_print(f"  Raw results: {results}")
+        print(f"  Raw results: {results}")
 
-    __copilot_log_print("─" * 62)
-    __copilot_log_print()
+    print("─" * 62)
+    print()
 
 
 # ─── CLI entry point ─────────────────────────────────────────────────────────
@@ -289,7 +277,7 @@ def _cli() -> argparse.Namespace:
         "--api-key",
         default=None,
         dest="api_key",
-        help="FXMacroData API key (optional — USD data is always free)",
+        help="FXMacroData API key (required for FX spot rates and commodities)",
     )
     return p.parse_args()
 
@@ -304,11 +292,11 @@ if __name__ == "__main__":
             api_key=args.api_key,
         )
     except PermissionError as exc:
-        __copilot_log_print(f"\nError: {exc}", file=sys.stderr)
+        print(f"\nError: {exc}", file=sys.stderr)
         sys.exit(1)
     except ValueError as exc:
-        __copilot_log_print(f"\nError: {exc}", file=sys.stderr)
+        print(f"\nError: {exc}", file=sys.stderr)
         sys.exit(1)
     except KeyboardInterrupt:
-        __copilot_log_print("\nInterrupted.", file=sys.stderr)
+        print("\nInterrupted.", file=sys.stderr)
         sys.exit(1)

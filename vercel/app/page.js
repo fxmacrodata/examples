@@ -9,7 +9,7 @@ import CalendarTab from '../components/CalendarTab';
 const SITE_URL = 'https://fxmacrodata.com';
 const DOCS_URL = 'https://fxmacrodata.com/documentation';
 const SUBSCRIBE_URL = 'https://fxmacrodata.com/subscribe';
-const API_KEYS_URL = 'https://fxmacrodata.com/api-management';
+const API_KEYS_URL = 'https://api.fxmacrodata.com-management';
 
 const TABS = [
   { key: 'metals', label: '💎 Precious Metals' },

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const API_BASE = 'https://fxmacrodata.com/api';
+const API_BASE = 'https://api.fxmacrodata.com';
 
 /**
  * GET /api/calendar?currency=USD[&api_key=...]
@@ -23,10 +23,14 @@ export async function GET(request) {
   const upstream = new URL(
     `${API_BASE}/v1/calendar/${encodeURIComponent(currency.toLowerCase())}`,
   );
-  if (apiKey) upstream.searchParams.set('api_key', apiKey);
+  // The key travels in the X-API-Key header, not the query string: the
+  // upstream URL is also the fetch cache key here, and query strings are
+  // recorded by proxies, CDNs and access logs.
+  const headers = apiKey ? { 'X-API-Key': apiKey } : {};
 
   try {
     const res = await fetch(upstream.toString(), {
+      headers,
       next: { revalidate: 1800 },
     });
     const json = await res.json();

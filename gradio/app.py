@@ -4,9 +4,10 @@ FXMacroData – FX & Macro Explorer
 A Gradio example app for exploring macroeconomic indicators, FX spot rates,
 and economic release calendars via the FXMacroData REST API.
 
-Free tier  : USD macro indicators + any FX pair — no API key required.
+Free tier  : USD macro indicators, most recent 90 days, no API key.
+             FX spot rates require an API key.
 Pro tier   : All 18 currencies — requires a Professional API key.
-             Get yours at https://fxmacrodata.com/api-management
+             Get yours at https://api.fxmacrodata.com-management
 
 Run locally
 -----------
@@ -32,10 +33,10 @@ import requests
 
 # ─── Constants ────────────────────────────────────────────────────────────────
 
-API_BASE = "https://fxmacrodata.com/api/v1"
+API_BASE = "https://api.fxmacrodata.com/v1"
 SITE_URL = "https://fxmacrodata.com"
 DOCS_URL = "https://fxmacrodata.com/documentation"
-API_KEYS_URL = "https://fxmacrodata.com/api-management"
+API_KEYS_URL = "https://api.fxmacrodata.com-management"
 
 FREE_CURRENCY = "USD"
 
@@ -160,13 +161,13 @@ def fetch_indicator(
         return cached
 
     params: dict = {"start_date": start_date, "end_date": end_date}
-    if api_key:
-        params["api_key"] = api_key
+    headers = {"X-API-Key": api_key} if api_key else {}
 
     try:
         resp = requests.get(
             f"{API_BASE}/announcements/{currency.lower()}/{indicator}",
             params=params,
+            headers=headers,
             timeout=10,
         )
     except requests.exceptions.RequestException as exc:
@@ -212,13 +213,13 @@ def fetch_forex(
         return cached
 
     params: dict = {"start_date": start_date, "end_date": end_date}
-    if api_key:
-        params["api_key"] = api_key
+    headers = {"X-API-Key": api_key} if api_key else {}
 
     try:
         resp = requests.get(
             f"{API_BASE}/forex/{base.lower()}/{quote.lower()}",
             params=params,
+            headers=headers,
             timeout=10,
         )
     except requests.exceptions.RequestException as exc:
@@ -257,13 +258,13 @@ def fetch_calendar(
         return cached
 
     params: dict = {}
-    if api_key:
-        params["api_key"] = api_key
+    headers = {"X-API-Key": api_key} if api_key else {}
 
     try:
         resp = requests.get(
             f"{API_BASE}/calendar/{currency.lower()}",
             params=params,
+            headers=headers,
             timeout=10,
         )
     except requests.exceptions.RequestException as exc:
@@ -625,7 +626,7 @@ with gr.Blocks(title="FX & Macro Explorer – FXMacroData") as demo:
         with gr.Tab("📈 Indicator Explorer"):
             gr.Markdown(
                 "Select a currency and indicator to explore the historical time series.  \n"
-                "USD is always free. A Professional API key is required for other currencies."
+                "USD announcements are free for the most recent 90 days. Other currencies need an API key."
             )
 
             with gr.Row():
@@ -705,7 +706,7 @@ with gr.Blocks(title="FX & Macro Explorer – FXMacroData") as demo:
         with gr.Tab("💱 FX Rates"):
             gr.Markdown(
                 "Look up historical FX spot rates for any currency pair.  \n"
-                "All pairs are available with no API key required."
+                "FX spot rates require an API key."
             )
 
             with gr.Row():
