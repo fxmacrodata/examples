@@ -30,6 +30,7 @@ Public USD catalogue, recent macro history and calendar queries support evaluati
 | Macro Data Access | pandas-datareader | Local script |
 | Macro Carry Scanner | CCXT | Local script |
 | Carry Rebalance Bot | Blankly | Local strategy |
+| Release-Aware EUR/USD Backtest | Julia + Fastback.jl | Local script |
 
 ## Key safety policy (required)
 
