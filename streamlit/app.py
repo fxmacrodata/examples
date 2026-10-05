@@ -4,7 +4,7 @@ FXMacroData – Central Bank Rate Monitor
 A Streamlit example app demonstrating how to use the FXMacroData REST API.
 
 Free tier:   USD announcement indicators — no API key required.
-Pro tier:    Non-USD announcement indicators — requires a Professional API key.
+Paid plans:  Non-USD announcement indicators — require an API key.
              Get yours at https://fxmacrodata.com/api-management
 """
 
@@ -28,25 +28,29 @@ DOCS_URL = "https://fxmacrodata.com/documentation?utm_source=streamlit&utm_mediu
 API_KEYS_URL = "https://fxmacrodata.com/api-management?utm_source=streamlit&utm_medium=integration&utm_campaign=examples&utm_content=streamlit"
 SUBSCRIBE_URL = "https://fxmacrodata.com/subscribe?utm_source=streamlit&utm_medium=integration&utm_campaign=examples&utm_content=streamlit"
 
-# Currencies available with a Professional API key (free = USD only)
+# Currencies available with an API key (free = USD only)
 PRO_CURRENCIES = [
     "EUR",
     "GBP",
-    "AUD",
     "JPY",
+    "AUD",
     "CAD",
     "CHF",
     "NZD",
     "CNY",
-    "HKD",
-    "SGD",
-    "KRW",
-    "NOK",
+    "CNH",
     "SEK",
+    "NOK",
     "DKK",
-    "PLN",
+    "KRW",
     "BRL",
-    "MXN",
+    "HUF",
+    "ILS",
+    "MYR",
+    "NGN",
+    "PEN",
+    "THB",
+    "TWD",
 ]
 
 # Indicators supported by the /v1/announcements/{currency}/{indicator} endpoint
@@ -114,7 +118,7 @@ def fetch_indicator(
     if resp.status_code == 401:
         return None, (
             "🔑 **API key required for this currency.**  "
-            f"[Get your free Professional key]({API_KEYS_URL}) to unlock protected non-USD announcements."
+            f"[Get an API key]({API_KEYS_URL}) to unlock protected non-USD announcements."
         )
     if resp.status_code == 403:
         return None, "❌ Invalid API key.  Please check your key and try again."
@@ -136,7 +140,7 @@ def fetch_indicator(
 
 @st.cache_data(ttl=300, show_spinner=False)
 def validate_api_key(api_key: str) -> tuple[bool, str]:
-    """Validate a Professional API key against a protected non-USD endpoint."""
+    """Validate an API key against a protected non-USD endpoint."""
     if not api_key:
         return False, "empty"
 
@@ -396,7 +400,7 @@ st.markdown(
 with st.sidebar:
     st.markdown("### 🌐 FXMacroData")
     st.markdown(
-        f"**[FXMacroData]({SITE_URL})** — institutional-grade macro & FX data API."
+        f"**[FXMacroData]({SITE_URL})** — macro & FX data API from official sources."
     )
     st.divider()
 
@@ -406,13 +410,13 @@ with st.sidebar:
 
     st.subheader("🔑 API Key")
     api_key_input = st.text_input(
-        "Professional API key",
+        "API key",
         type="password",
         value=api_key_seed,
         placeholder="Paste your API key here",
         help=(
             "USD announcement data is public — no key needed.  "
-            "Enter your Professional key to unlock protected non-USD announcements."
+            "Enter your API key to unlock protected non-USD announcements."
         ),
     )
     api_key_candidate: Optional[str] = api_key_input.strip() or None
@@ -481,11 +485,11 @@ st.markdown(
 
 stat_a, stat_b, stat_c = st.columns(3)
 with stat_a:
-    st.metric("Supported currencies", "18")
+    st.metric("Supported currencies", "22")
 with stat_b:
     st.metric("Indicator families", "40+")
 with stat_c:
-    st.metric("Starting paid plan", "$25/mo")
+    st.metric("Starting paid plan", "$50/mo")
 st.divider()
 
 # ---------------------------------------------------------------------------
@@ -618,10 +622,10 @@ with tab_multi:
 
     if not api_key:
         st.info(
-            f"🔑 Enter your **Professional API key** in the sidebar to unlock "
-            f"data for all 18 currencies.\n\n"
-            f"[Get your free API key]({API_KEYS_URL}) — "
-            "Professional plan starts at **$25/month**."
+            f"🔑 Enter your **API key** in the sidebar to unlock "
+            f"data for all 22 currencies.\n\n"
+            f"[Get an API key]({API_KEYS_URL}) — "
+            "Paid plans start at **$50/month** with a 14-day free trial."
         )
         st.markdown("---")
         st.markdown("#### What you'll unlock:")
@@ -647,7 +651,7 @@ with tab_multi:
                 "Select currencies to compare",
                 options=["USD"] + PRO_CURRENCIES,
                 default=["USD", "EUR", "GBP", "AUD"],
-                help="USD is always free; other currencies require a Professional key.",
+                help="USD is always free; other currencies require an API key.",
             )
         with col2:
             selected_indicator = st.selectbox(
@@ -801,23 +805,22 @@ traders, quantitative analysts, and algorithmic trading teams.
 
 - 📊 **40+ indicators** per currency — inflation, GDP, unemployment, policy rates,
   PMI, retail sales, and more.
-- 🏦 **18 currencies** — USD, EUR, GBP, AUD, JPY, CAD, CHF, NZD, CNY, HKD, SGD,
-  KRW, NOK, SEK, DKK, PLN, BRL, MXN.
+- 🏦 **22 currencies** — USD, EUR, GBP, JPY, AUD, CAD, CHF, NZD, CNY, CNH, SEK,
+  NOK, DKK, KRW, BRL, HUF, ILS, MYR, NGN, PEN, THB, TWD.
 - ⚡ **Low-latency REST API** — clean JSON, zero pre-processing required.
 - 🗓️ **Release calendars** — know exactly when the next data drop lands.
 - 📈 **COT positioning data** — CFTC Commitment of Traders for FX futures.
 - 💎 **Precious metals** — daily gold, silver, and platinum spot prices.
 
-### Free vs Professional
+### Free vs paid
 
-| Feature | Free | Professional |
+| Feature | Free | Paid |
 |---|---|---|
 | USD macro indicators | ✅ | ✅ |
-| All 18 currency indicators | ❌ | ✅ |
-| COT positioning data | ❌ | ✅ |
-| Release calendars | ❌ | ✅ |
-| Commercial use | ❌ | ✅ |
-| Price | $0 | $25/month |
+| All 22 currencies | ❌ | ✅ |
+| Real-time releases and full history | ❌ | ✅ |
+| FX rates and commodities | ❌ | ✅ |
+| Price | $0 | From $50/month |
 
 ### Links
 
