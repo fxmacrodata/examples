@@ -4,7 +4,7 @@ A Streamlit example app that visualizes macroeconomic indicators from the
 **[FXMacroData API](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit)**.
 
 > **USD announcement data is public — no API key required.**  
-> Enter a [Professional API key](https://api.fxmacrodata.com-management) in the
+> Enter an [API key](https://fxmacrodata.com/api-management?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit) in the
 > sidebar to unlock protected non-USD announcements.
 
 ---
@@ -14,7 +14,7 @@ A Streamlit example app that visualizes macroeconomic indicators from the
 | Tab | What it shows | API key needed? |
 |---|---|---|
 | 🇺🇸 USD Dashboard | Policy rate, inflation, GDP, unemployment, snapshot table, release timeline | No |
-| 🌍 Multi-Currency | Compare any indicator across up to 18 currencies | Yes (for non-USD) |
+| 🌍 Multi-Currency | Compare any indicator across up to 22 currencies | Yes (for non-USD) |
 | ℹ️ About | Feature overview and API links | No |
 
 ---
@@ -74,4 +74,4 @@ Full API reference: <https://fxmacrodata.com/documentation?utm_source=github&utm
 
 - 🌐 [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit)
 - 📖 [API Docs](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit)
-- 🔑 [Get an API key](https://api.fxmacrodata.com-management)
+- 🔑 [Get an API key](https://fxmacrodata.com/api-management?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit)
