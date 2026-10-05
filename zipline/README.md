@@ -1,6 +1,6 @@
 # FXMacroData × Zipline
 
-Use [FXMacroData](https://fxmacrodata.com) as a data source inside
+Use [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=zipline) as a data source inside
 [zipline-reloaded](https://github.com/stefan-jansen/zipline-reloaded) backtests.
 This integration provides a Zipline bundle for FX spot rates and three
 DataFrame loader functions for macro indicators, FX, and commodities.
@@ -106,7 +106,7 @@ print(inflation.loc["2023-07-01", "val"])   # 3.0 (July 2023 CPI YoY %)
 | `retail_sales` | Retail Sales (MoM %) |
 | `pmi` | Manufacturing PMI |
 | `trade_balance` | Trade Balance (USD mn) |
-| … 40+ more | See [full catalogue](https://fxmacrodata.com/documentation) |
+| … 40+ more | See [full catalogue](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=zipline) |
 
 ---
 
@@ -326,8 +326,8 @@ df = fetch_indicator("EUR", "inflation", "2020-01-01", "2025-12-31",
 
 ## Links
 
-- [FXMacroData](https://fxmacrodata.com)
-- [API Documentation](https://fxmacrodata.com/documentation)
+- [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=zipline)
+- [API Documentation](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=zipline)
 - [Get an API key](https://api.fxmacrodata.com-management)
 - [zipline-reloaded docs](https://zipline.ml4trading.io)
 - [exchange-calendars](https://github.com/gerrymanoim/exchange_calendars)

@@ -3,7 +3,7 @@
 A **Plotly Dash** example app focused on two-country macro comparison.
 It tracks policy and macro divergence (spread, trend, volatility) and
 generates an analyst-style narrative, powered by the
-**[FXMacroData API](https://fxmacrodata.com)**.
+**[FXMacroData API](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=dash)**.
 
 > **USD announcement data is public — no API key required.**  
 > Enter a [Professional API key](https://api.fxmacrodata.com-management) to
@@ -95,12 +95,12 @@ Once deployed, submit the app to the open-source Dash example index:
 | `GET /v1/announcements/usd/{indicator}` | Free | USD macro indicator history |
 | `GET /v1/announcements/{currency}/{indicator}` | API key | Non-USD indicator history |
 
-Full API reference: <https://fxmacrodata.com/documentation>
+Full API reference: <https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=dash>
 
 ---
 
 ## Links
 
-- 🌐 [FXMacroData](https://fxmacrodata.com)
-- 📖 [API Docs](https://fxmacrodata.com/documentation)
+- 🌐 [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=dash)
+- 📖 [API Docs](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=dash)
 - 🔑 [Get an API key](https://api.fxmacrodata.com-management)

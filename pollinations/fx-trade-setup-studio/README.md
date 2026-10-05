@@ -41,4 +41,4 @@ The app calls Pollinations image generation directly through generated URLs:
 
 - Pollinations home: https://pollinations.ai
 - Pollinations app showcase: https://pollinations.ai/apps
-- FXMacroData: https://fxmacrodata.com
+- FXMacroData: https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=fx-trade-setup-studio

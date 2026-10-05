@@ -1,6 +1,6 @@
 # FXMacroData × Freqtrade
 
-Use [FXMacroData](https://fxmacrodata.com) as a macro signal source inside
+Use [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=freqtrade) as a macro signal source inside
 [Freqtrade](https://www.freqtrade.io) strategies.  This integration provides
 data-loader helpers for every public FXMacroData endpoint plus a ready-to-run
 example strategy.
@@ -79,7 +79,7 @@ print(inflation.loc["2023-07-01", "val"])   # 3.0 (July 2023 CPI YoY %)
 | `retail_sales` | Retail Sales (MoM %) |
 | `pmi` | Manufacturing PMI |
 | `trade_balance` | Trade Balance (USD mn) |
-| … 40+ more | See [full catalogue](https://fxmacrodata.com/documentation) |
+| … 40+ more | See [full catalogue](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=freqtrade) |
 
 ---
 
@@ -298,8 +298,8 @@ self._api_key = config.get("fxmacrodata_api_key")
 
 ## Links
 
-- [FXMacroData](https://fxmacrodata.com)
-- [API Documentation](https://fxmacrodata.com/documentation)
+- [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=freqtrade)
+- [API Documentation](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=freqtrade)
 - [Get an API key](https://api.fxmacrodata.com-management)
 - [Freqtrade documentation](https://www.freqtrade.io/en/stable/)
 - [Freqtrade strategy customisation](https://www.freqtrade.io/en/stable/strategy-customization/)

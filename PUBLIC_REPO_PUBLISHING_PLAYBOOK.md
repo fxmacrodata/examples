@@ -3,7 +3,7 @@
 Target public repo: https://github.com/fxmacrodata/examples
 
 Goal: maximize developer distribution and convert traffic to
-https://fxmacrodata.com/subscribe.
+https://fxmacrodata.com/subscribe?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=public_repo_publishing_playbook.
 
 ## 1. Keep examples current
 

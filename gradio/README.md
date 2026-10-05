@@ -2,7 +2,7 @@
 
 A **Gradio** example app for exploring macroeconomic indicators, FX spot rates,
 and economic release calendars, powered by the
-**[FXMacroData API](https://fxmacrodata.com)**.
+**[FXMacroData API](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=gradio)**.
 
 > **USD announcement data is public — no API key required.**  
 > Enter a [Professional API key](https://api.fxmacrodata.com-management) to
@@ -74,12 +74,12 @@ Open <http://localhost:7860> in your browser.
 | `GET /v1/forex/{base}/{quote}` | Free | FX spot rate history |
 | `GET /v1/calendar/{currency}` | Free | Upcoming release dates for supported currencies |
 
-Full API reference: <https://fxmacrodata.com/documentation>
+Full API reference: <https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=gradio>
 
 ---
 
 ## Links
 
-- 🌐 [FXMacroData](https://fxmacrodata.com)
-- 📖 [API Docs](https://fxmacrodata.com/documentation)
+- 🌐 [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=gradio)
+- 📖 [API Docs](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=gradio)
 - 🔑 [Get an API key](https://api.fxmacrodata.com-management)

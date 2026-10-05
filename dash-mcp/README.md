@@ -14,7 +14,7 @@ This example is based on the FXMacroData Public Macro Monitor workflow:
 - MCP-enabled Dash callback
 - Custom MCP snapshot tool
 
-Live reference app: <https://fxmacrodata.com/app-gallery/dash/public-macro-monitor>
+Live reference app: <https://fxmacrodata.com/app-gallery/dash/public-macro-monitor?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=dash-mcp>
 
 ---
 
@@ -125,7 +125,7 @@ You can also use the included `render.yaml` blueprint.
 |---|---|---|
 | `GET /v1/forex/{base}/{quote}` | API key | FX spot history for charting, correlations, and risk-regime analysis |
 
-Full API reference: <https://fxmacrodata.com/documentation>
+Full API reference: <https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=dash-mcp>
 
 ---
 
@@ -141,7 +141,7 @@ See the repo-wide key policy: [`../SECURITY_AND_KEYS.md`](../SECURITY_AND_KEYS.m
 
 ## Links
 
-- [FXMacroData](https://fxmacrodata.com)
-- [API documentation](https://fxmacrodata.com/documentation)
-- [Subscribe](https://fxmacrodata.com/subscribe)
-- [Public Macro Monitor](https://fxmacrodata.com/app-gallery/dash/public-macro-monitor)
+- [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=dash-mcp)
+- [API documentation](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=dash-mcp)
+- [Subscribe](https://fxmacrodata.com/subscribe?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=dash-mcp)
+- [Public Macro Monitor](https://fxmacrodata.com/app-gallery/dash/public-macro-monitor?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=dash-mcp)

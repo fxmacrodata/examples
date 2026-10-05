@@ -279,15 +279,15 @@ guide and two usage patterns:
 | `GET /v1/commodities/{indicator}` | API key | Panel, Vercel, Backtrader |
 | `GET /v1/cot/{currency}` | API key | Vercel |
 
-Full reference: [fxmacrodata.com/documentation](https://fxmacrodata.com/documentation)
+Full reference: [fxmacrodata.com/documentation](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=readme)
 
 ---
 
 ## Links
 
-- [FXMacroData](https://fxmacrodata.com)
-- [API Docs](https://fxmacrodata.com/documentation)
-- [Subscribe](https://fxmacrodata.com/subscribe)
-- [API management](https://fxmacrodata.com/api-management)
+- [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=readme)
+- [API Docs](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=readme)
+- [Subscribe](https://fxmacrodata.com/subscribe?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=readme)
+- [API management](https://fxmacrodata.com/api-management?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=readme)
 - [Public examples repository](https://github.com/fxmacrodata/examples)
 - [Security and key policy](./SECURITY_AND_KEYS.md)

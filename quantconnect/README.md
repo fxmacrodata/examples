@@ -1,6 +1,6 @@
 # FXMacroData — QuantConnect / LEAN Integration
 
-Plug institutional-quality macroeconomic data from [FXMacroData](https://fxmacrodata.com) directly into your [QuantConnect](https://www.quantconnect.com) or local [LEAN](https://lean.io) algorithms.
+Plug institutional-quality macroeconomic data from [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=quantconnect) directly into your [QuantConnect](https://www.quantconnect.com) or local [LEAN](https://lean.io) algorithms.
 
 ---
 
@@ -40,7 +40,7 @@ if slice.contains_key(usd_rate):
 
 **Access:** USD announcement indicators are public. Non-USD announcement indicators require a Professional API key. See the public documentation for current published currency coverage.
 
-**Common indicators:** `policy_rate`, `inflation`, `core_inflation`, `gdp`, `gdp_quarterly`, `unemployment`, `non_farm_payrolls`, `retail_sales`, `pmi`, `trade_balance`, `ppi`, `cpi`, and [40+ more](https://fxmacrodata.com/documentation).
+**Common indicators:** `policy_rate`, `inflation`, `core_inflation`, `gdp`, `gdp_quarterly`, `unemployment`, `non_farm_payrolls`, `retail_sales`, `pmi`, `trade_balance`, `ppi`, `cpi`, and [40+ more](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=quantconnect).
 
 ---
 
@@ -212,7 +212,7 @@ EUR/USD, and GBP/USD:
 
 ## Supported indicators (full list)
 
-See [fxmacrodata.com/documentation](https://fxmacrodata.com/documentation) for the complete catalogue.
+See [fxmacrodata.com/documentation](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=quantconnect) for the complete catalogue.
 
 | Indicator key | Description |
 |---|---|
@@ -236,8 +236,8 @@ See [fxmacrodata.com/documentation](https://fxmacrodata.com/documentation) for t
 
 ## Links
 
-- 🌐 [FXMacroData Website](https://fxmacrodata.com)
-- 📖 [API Documentation](https://fxmacrodata.com/documentation)
+- 🌐 [FXMacroData Website](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=quantconnect)
+- 📖 [API Documentation](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=quantconnect)
 - 🔑 [Get your API key](https://api.fxmacrodata.com-management)
 - 📊 [QuantConnect](https://www.quantconnect.com)
 - 🚀 [LEAN Engine](https://lean.io)

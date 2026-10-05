@@ -18,7 +18,7 @@ npm run dev
 
 ## Conversion path
 
-- https://fxmacrodata.com/subscribe
+- https://fxmacrodata.com/subscribe?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=netlify-widget
 
 ## Key safety
 

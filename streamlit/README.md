@@ -1,7 +1,7 @@
 # FXMacroData – Central Bank Rate Monitor (Streamlit)
 
 A Streamlit example app that visualizes macroeconomic indicators from the
-**[FXMacroData API](https://fxmacrodata.com)**.
+**[FXMacroData API](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit)**.
 
 > **USD announcement data is public — no API key required.**  
 > Enter a [Professional API key](https://api.fxmacrodata.com-management) in the
@@ -66,12 +66,12 @@ Open <http://localhost:8501> in your browser.
 | `GET /v1/announcements/{currency}/{indicator}` | API key | Non-USD indicator history |
 | `GET /v1/calendar/usd` | Free | Upcoming USD macro release schedule |
 
-Full API reference: <https://fxmacrodata.com/documentation>
+Full API reference: <https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit>
 
 ---
 
 ## Links
 
-- 🌐 [FXMacroData](https://fxmacrodata.com)
-- 📖 [API Docs](https://fxmacrodata.com/documentation)
+- 🌐 [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit)
+- 📖 [API Docs](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit)
 - 🔑 [Get an API key](https://api.fxmacrodata.com-management)

@@ -2,7 +2,7 @@
 
 A **HoloViz Panel** example app that visualises macroeconomic indicators and
 precious metals prices across 18 currencies, powered by the
-**[FXMacroData API](https://fxmacrodata.com)**.
+**[FXMacroData API](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=panel)**.
 
 > **USD announcement data is public.**  
 > Enter a [Professional API key](https://api.fxmacrodata.com-management) to
@@ -90,13 +90,13 @@ The included `Procfile` is used automatically.
 | `GET /v1/announcements/{currency}/{indicator}` | API key | Non-USD indicator history |
 | `GET /v1/commodities/{indicator}` | API key | Precious metals spot prices |
 
-Full API reference: <https://fxmacrodata.com/documentation>
+Full API reference: <https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=panel>
 
 ---
 
 ## Links
 
-- 🌐 [FXMacroData](https://fxmacrodata.com)
-- 📖 [API Docs](https://fxmacrodata.com/documentation)
+- 🌐 [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=panel)
+- 📖 [API Docs](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=panel)
 - 🔑 [Get an API key](https://api.fxmacrodata.com-management)
 - 🖥️ [HoloViz Panel](https://panel.holoviz.org)
