@@ -1,0 +1,9 @@
+# FXMacroData terminal-dark theme for the Central Bank Rate Monitor.
+# Streamlit reads this from the directory you launch it in. Community Cloud
+# launches from the repository root, so the same file lives at /.streamlit too.
+[theme]
+base = "dark"
+primaryColor = "#00e5ff"
+backgroundColor = "#0d1117"
+secondaryBackgroundColor = "#161b22"
+textColor = "#cdd9e5"
