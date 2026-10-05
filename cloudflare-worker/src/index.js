@@ -1,5 +1,5 @@
 const API_BASE = 'https://api.fxmacrodata.com/v1';
-const SUBSCRIBE_URL = 'https://fxmacrodata.com/subscribe';
+const SUBSCRIBE_URL = 'https://fxmacrodata.com/subscribe?utm_source=cloudflare&utm_medium=integration&utm_campaign=examples&utm_content=cloudflare-worker';
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {

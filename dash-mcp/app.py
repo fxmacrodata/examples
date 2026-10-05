@@ -45,9 +45,9 @@ API_BASE = (
     os.getenv("PUBLIC_DASH_API_BASE_URL", "").strip().rstrip("/")
     or "https://api.fxmacrodata.com/v1"
 )
-DOCS_URL = "https://fxmacrodata.com/documentation"
-SUBSCRIBE_URL = "https://fxmacrodata.com/subscribe"
-PUBLIC_MONITOR_URL = "https://fxmacrodata.com/app-gallery/dash/public-macro-monitor"
+DOCS_URL = "https://fxmacrodata.com/documentation?utm_source=dash&utm_medium=integration&utm_campaign=examples&utm_content=dash-mcp"
+SUBSCRIBE_URL = "https://fxmacrodata.com/subscribe?utm_source=dash&utm_medium=integration&utm_campaign=examples&utm_content=dash-mcp"
+PUBLIC_MONITOR_URL = "https://fxmacrodata.com/app-gallery/dash/public-macro-monitor?utm_source=dash&utm_medium=integration&utm_campaign=examples&utm_content=dash-mcp"
 
 PAIR_CODES = {
     "EUR_USD": ("EUR", "USD"),

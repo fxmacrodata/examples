@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const API_KEYS_URL = 'https://api.fxmacrodata.com-management';
+const API_KEYS_URL = 'https://fxmacrodata.com/api-management?utm_source=vercel&utm_medium=integration&utm_campaign=examples&utm_content=vercel';
 
 const CURRENCIES = [
   { code: 'EUR', flag: '🇪🇺', label: 'Euro' },

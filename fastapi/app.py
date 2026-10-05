@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 
 API_BASE = "https://api.fxmacrodata.com/v1"
-SUBSCRIBE_URL = "https://fxmacrodata.com/subscribe"
+SUBSCRIBE_URL = "https://fxmacrodata.com/subscribe?utm_source=fastapi&utm_medium=integration&utm_campaign=examples&utm_content=fastapi"
 
 app = FastAPI(title="FXMacroData FastAPI Example", version="1.0.0")
 

@@ -5,7 +5,7 @@ A Streamlit example app demonstrating how to use the FXMacroData REST API.
 
 Free tier:   USD announcement indicators — no API key required.
 Pro tier:    Non-USD announcement indicators — requires a Professional API key.
-             Get yours at https://api.fxmacrodata.com-management
+             Get yours at https://fxmacrodata.com/api-management
 """
 
 import datetime
@@ -23,10 +23,10 @@ import streamlit as st
 
 API_BASE = "https://api.fxmacrodata.com"
 
-SITE_URL = "https://fxmacrodata.com"
-DOCS_URL = "https://fxmacrodata.com/documentation"
-API_KEYS_URL = "https://api.fxmacrodata.com-management"
-SUBSCRIBE_URL = "https://fxmacrodata.com/subscribe"
+SITE_URL = "https://fxmacrodata.com/?utm_source=streamlit&utm_medium=integration&utm_campaign=examples&utm_content=streamlit"
+DOCS_URL = "https://fxmacrodata.com/documentation?utm_source=streamlit&utm_medium=integration&utm_campaign=examples&utm_content=streamlit"
+API_KEYS_URL = "https://fxmacrodata.com/api-management?utm_source=streamlit&utm_medium=integration&utm_campaign=examples&utm_content=streamlit"
+SUBSCRIBE_URL = "https://fxmacrodata.com/subscribe?utm_source=streamlit&utm_medium=integration&utm_campaign=examples&utm_content=streamlit"
 
 # Currencies available with a Professional API key (free = USD only)
 PRO_CURRENCIES = [

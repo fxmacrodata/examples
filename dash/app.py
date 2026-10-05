@@ -25,8 +25,8 @@ import requests
 from dash import Dash, Input, Output, State, dash_table, dcc, html
 
 API_BASE = "https://api.fxmacrodata.com/v1"
-API_MANAGEMENT_URL = "https://api.fxmacrodata.com-management"
-DOCS_URL = "https://fxmacrodata.com/documentation"
+API_MANAGEMENT_URL = "https://fxmacrodata.com/api-management?utm_source=dash&utm_medium=integration&utm_campaign=examples&utm_content=dash"
+DOCS_URL = "https://fxmacrodata.com/documentation?utm_source=dash&utm_medium=integration&utm_campaign=examples&utm_content=dash"
 
 FREE_CURRENCY = "USD"
 FREE_PAIR_DEFAULT = "USD / USD"

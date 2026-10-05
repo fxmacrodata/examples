@@ -58,7 +58,7 @@ USD announcement indicators are public. Non-USD announcement indicators,
 commodities, and COT data require a Professional API key. Pass it explicitly
 via ``api_key=`` or set the ``FXMACRODATA_API_KEY`` environment variable.
 
-Get your key at https://api.fxmacrodata.com-management
+Get your key at https://fxmacrodata.com/api-management
 """
 
 from __future__ import annotations
@@ -69,8 +69,8 @@ from typing import List, Optional, Union
 import pandas as pd
 
 _API_BASE = "https://api.fxmacrodata.com/v1"
-_DOCS_URL = "https://fxmacrodata.com/documentation"
-_API_KEYS_URL = "https://api.fxmacrodata.com-management"
+_DOCS_URL = "https://fxmacrodata.com/documentation?utm_source=pandas_datareader&utm_medium=integration&utm_campaign=examples&utm_content=pandas-datareader"
+_API_KEYS_URL = "https://fxmacrodata.com/api-management?utm_source=pandas_datareader&utm_medium=integration&utm_campaign=examples&utm_content=pandas-datareader"
 
 # Precious-metal symbols handled by the /v1/commodities/ endpoint
 _COMMODITY_SYMBOLS = frozenset({"gold", "silver", "platinum"})

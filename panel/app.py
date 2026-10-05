@@ -8,7 +8,7 @@ REST API.
 Free tier  : USD macro indicators, most recent 90 days, no API key.
              Precious metals require an API key.
 Pro tier   : Full 18-currency grid — requires a Professional API key.
-             Get yours at https://api.fxmacrodata.com-management
+             Get yours at https://fxmacrodata.com/api-management
 
 Run locally
 -----------
@@ -43,9 +43,9 @@ pn.extension("plotly", sizing_mode="stretch_width")
 # ─── Constants ────────────────────────────────────────────────────────────────
 
 API_BASE = "https://api.fxmacrodata.com/v1"
-SITE_URL = "https://fxmacrodata.com"
-DOCS_URL = "https://fxmacrodata.com/documentation"
-API_KEYS_URL = "https://api.fxmacrodata.com-management"
+SITE_URL = "https://fxmacrodata.com/?utm_source=panel&utm_medium=integration&utm_campaign=examples&utm_content=panel"
+DOCS_URL = "https://fxmacrodata.com/documentation?utm_source=panel&utm_medium=integration&utm_campaign=examples&utm_content=panel"
+API_KEYS_URL = "https://fxmacrodata.com/api-management?utm_source=panel&utm_medium=integration&utm_campaign=examples&utm_content=panel"
 
 FREE_CURRENCY = "USD"
 
