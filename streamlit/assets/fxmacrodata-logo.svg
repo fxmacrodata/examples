@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 336 64" role="img" aria-labelledby="title">
+  <title id="title">FXMacroData</title>
+  <defs>
+    <linearGradient id="brand" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#20a7ff"/>
+      <stop offset="0.52" stop-color="#00d9e6"/>
+      <stop offset="1" stop-color="#00f2a6"/>
+    </linearGradient>
+    <filter id="glow" x="-25%" y="-35%" width="150%" height="170%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="15" fill="#05131d" stroke="url(#brand)" stroke-width="2"/>
+  <path d="M12 47 26 33l10 9 18-23" fill="none" stroke="url(#brand)" stroke-linecap="round" stroke-linejoin="round" stroke-width="6" filter="url(#glow)"/>
+  <path d="m50 18 5-2-1 5" fill="none" stroke="#00f2a6" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <text x="77" y="42" fill="url(#brand)" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" letter-spacing="-1.5">FXMacroData</text>
+</svg>

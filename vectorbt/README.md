@@ -1,7 +1,7 @@
 # FXMacroData – VectorBT Integration
 
 A **Jupyter notebook** that demonstrates how to backtest FX trading strategies
-using macroeconomic data from the **[FXMacroData API](https://fxmacrodata.com)**
+using macroeconomic data from the **[FXMacroData API](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=vectorbt)**
 and the **[VectorBT](https://vectorbt.dev)** backtesting library.
 
 > **USD announcement indicators are public for the most recent 90 days. EUR/USD
@@ -55,7 +55,7 @@ Set `API_KEY` in the **Configuration** cell to unlock Pro strategies.
 | `GET /v1/announcements/eur/policy_rate` | API key | ECB deposit rate |
 | `GET /v1/announcements/{currency}/policy_rate` | API key | Multi-currency carry |
 
-Full API reference: [fxmacrodata.com/documentation](https://fxmacrodata.com/documentation)
+Full API reference: [fxmacrodata.com/documentation](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=vectorbt)
 
 ---
 
@@ -75,8 +75,8 @@ Full API reference: [fxmacrodata.com/documentation](https://fxmacrodata.com/docu
 
 ## Useful links
 
-- 🌐 [FXMacroData](https://fxmacrodata.com)
-- 📖 [API Docs](https://fxmacrodata.com/documentation)
+- 🌐 [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=vectorbt)
+- 📖 [API Docs](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=vectorbt)
 - 🔑 [Get an API key](https://api.fxmacrodata.com-management)
 - 📦 [VectorBT documentation](https://vectorbt.dev)
 - 💬 [VectorBT community](https://github.com/polakowo/vectorbt/discussions)

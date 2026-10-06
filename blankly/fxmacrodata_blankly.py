@@ -45,7 +45,7 @@ API key
 FX spot rates are public, and USD announcement indicators are public.
 Pass ``api_key="YOUR_KEY"`` to unlock protected non-USD announcements and
 commodities data, or set the ``FXMACRODATA_API_KEY`` environment variable.
-Get a key at https://api.fxmacrodata.com-management
+Get a key at https://fxmacrodata.com/api-management
 """
 
 from __future__ import annotations
@@ -60,9 +60,9 @@ import requests
 # ─── Constants ───────────────────────────────────────────────────────────────
 
 API_BASE = "https://api.fxmacrodata.com/v1"
-SITE_URL = "https://fxmacrodata.com"
-DOCS_URL = "https://fxmacrodata.com/documentation"
-API_KEYS_URL = "https://api.fxmacrodata.com-management"
+SITE_URL = "https://fxmacrodata.com/?utm_source=blankly&utm_medium=integration&utm_campaign=examples&utm_content=blankly"
+DOCS_URL = "https://fxmacrodata.com/documentation?utm_source=blankly&utm_medium=integration&utm_campaign=examples&utm_content=blankly"
+API_KEYS_URL = "https://fxmacrodata.com/api-management?utm_source=blankly&utm_medium=integration&utm_campaign=examples&utm_content=blankly"
 
 __all__ = [
     "fetch_forex",

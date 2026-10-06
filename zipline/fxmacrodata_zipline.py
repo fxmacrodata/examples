@@ -44,7 +44,7 @@ FX spot rates are public, and USD announcement indicators are public.
 To unlock protected non-USD announcements and commodities, pass
 ``api_key="YOUR_KEY"`` to any loader or set the ``FXMACRODATA_API_KEY``
 environment variable.
-Get a key at https://api.fxmacrodata.com-management
+Get a key at https://fxmacrodata.com/api-management
 """
 from __future__ import annotations
 
@@ -58,9 +58,9 @@ import requests
 # ─── Constants ───────────────────────────────────────────────────────────────
 
 API_BASE = "https://api.fxmacrodata.com/v1"
-SITE_URL = "https://fxmacrodata.com"
-DOCS_URL = "https://fxmacrodata.com/documentation"
-API_KEYS_URL = "https://api.fxmacrodata.com-management"
+SITE_URL = "https://fxmacrodata.com/?utm_source=zipline&utm_medium=integration&utm_campaign=examples&utm_content=zipline"
+DOCS_URL = "https://fxmacrodata.com/documentation?utm_source=zipline&utm_medium=integration&utm_campaign=examples&utm_content=zipline"
+API_KEYS_URL = "https://fxmacrodata.com/api-management?utm_source=zipline&utm_medium=integration&utm_campaign=examples&utm_content=zipline"
 
 _DEFAULT_BUNDLE_NAME = "fxmacrodata"
 _DEFAULT_CALENDAR = "24/5"

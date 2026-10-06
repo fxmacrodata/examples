@@ -1,6 +1,6 @@
 # FXMacroData × Blankly
 
-Use [FXMacroData](https://fxmacrodata.com) as a data source inside
+Use [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=blankly) as a data source inside
 [Blankly](https://blankly.finance) backtests.  This integration provides
 data-loader helpers for every public FXMacroData endpoint plus a
 `KeylessExchange` factory that lets you run fully keyless backtests with
@@ -115,7 +115,7 @@ val = get_macro_signal(inflation, state.time)  # state.time is Unix epoch
 | `retail_sales` | Retail Sales (MoM %) |
 | `pmi` | Manufacturing PMI |
 | `trade_balance` | Trade Balance (USD mn) |
-| …40+ more | See [full catalogue](https://fxmacrodata.com/documentation) |
+| …40+ more | See [full catalogue](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=blankly) |
 
 ---
 
@@ -282,8 +282,8 @@ print(results)
 
 ## Links
 
-- [FXMacroData](https://fxmacrodata.com)
-- [API Documentation](https://fxmacrodata.com/documentation)
+- [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=blankly)
+- [API Documentation](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=blankly)
 - [Get an API key](https://api.fxmacrodata.com-management)
 - [Blankly docs](https://docs.blankly.finance)
 - [Blankly GitHub](https://github.com/Blankly-Finance/Blankly)

@@ -20,7 +20,7 @@ npm run deploy
 - `/` - landing page with subscribe CTA
 - `/usd/latest` - public USD latest values
 - `/calendar/usd` - public USD calendar
-- `/subscribe` - redirects to https://fxmacrodata.com/subscribe
+- `/subscribe` - redirects to https://fxmacrodata.com/subscribe?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=cloudflare-worker
 
 ## Key safety
 

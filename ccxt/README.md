@@ -1,6 +1,6 @@
 # FXMacroData × CCXT
 
-Use [FXMacroData](https://fxmacrodata.com) through the familiar
+Use [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=ccxt) through the familiar
 [CCXT](https://github.com/ccxt/ccxt) unified interface.  This integration
 provides a drop-in CCXT exchange adapter so any existing CCXT-based trading
 or analysis code can consume FXMacroData FX spot rates, commodity prices, and
@@ -222,7 +222,7 @@ eur_infl = exchange.fetch_macro_indicator('EUR', 'inflation',
 | `housing_starts` | Housing Starts (k) |
 | `industrial_production` | Industrial Production (YoY %) |
 | `consumer_confidence` | Conference Board Consumer Confidence |
-| … 30+ more | See [full catalogue](https://fxmacrodata.com/documentation) |
+| … 30+ more | See [full catalogue](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=ccxt) |
 
 ---
 
@@ -351,8 +351,8 @@ python example.py --api-key YOUR_KEY
 
 ## Links
 
-- [FXMacroData](https://fxmacrodata.com)
-- [API Documentation](https://fxmacrodata.com/documentation)
+- [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=ccxt)
+- [API Documentation](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=ccxt)
 - [Get an API key](https://api.fxmacrodata.com-management)
 - [CCXT docs](https://docs.ccxt.com)
 - [CCXT GitHub](https://github.com/ccxt/ccxt)

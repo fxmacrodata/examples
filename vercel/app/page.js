@@ -6,10 +6,10 @@ import MetalsTab from '../components/MetalsTab';
 import CotTab from '../components/CotTab';
 import CalendarTab from '../components/CalendarTab';
 
-const SITE_URL = 'https://fxmacrodata.com';
-const DOCS_URL = 'https://fxmacrodata.com/documentation';
-const SUBSCRIBE_URL = 'https://fxmacrodata.com/subscribe';
-const API_KEYS_URL = 'https://api.fxmacrodata.com-management';
+const SITE_URL = 'https://fxmacrodata.com/?utm_source=vercel&utm_medium=integration&utm_campaign=examples&utm_content=vercel';
+const DOCS_URL = 'https://fxmacrodata.com/documentation?utm_source=vercel&utm_medium=integration&utm_campaign=examples&utm_content=vercel';
+const SUBSCRIBE_URL = 'https://fxmacrodata.com/subscribe?utm_source=vercel&utm_medium=integration&utm_campaign=examples&utm_content=vercel';
+const API_KEYS_URL = 'https://fxmacrodata.com/api-management?utm_source=vercel&utm_medium=integration&utm_campaign=examples&utm_content=vercel';
 
 const TABS = [
   { key: 'metals', label: '💎 Precious Metals' },

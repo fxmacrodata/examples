@@ -7,7 +7,7 @@ and economic release calendars via the FXMacroData REST API.
 Free tier  : USD macro indicators, most recent 90 days, no API key.
              FX spot rates require an API key.
 Pro tier   : All 18 currencies — requires a Professional API key.
-             Get yours at https://api.fxmacrodata.com-management
+             Get yours at https://fxmacrodata.com/api-management
 
 Run locally
 -----------
@@ -34,9 +34,9 @@ import requests
 # ─── Constants ────────────────────────────────────────────────────────────────
 
 API_BASE = "https://api.fxmacrodata.com/v1"
-SITE_URL = "https://fxmacrodata.com"
-DOCS_URL = "https://fxmacrodata.com/documentation"
-API_KEYS_URL = "https://api.fxmacrodata.com-management"
+SITE_URL = "https://fxmacrodata.com/?utm_source=gradio&utm_medium=integration&utm_campaign=examples&utm_content=gradio"
+DOCS_URL = "https://fxmacrodata.com/documentation?utm_source=gradio&utm_medium=integration&utm_campaign=examples&utm_content=gradio"
+API_KEYS_URL = "https://fxmacrodata.com/api-management?utm_source=gradio&utm_medium=integration&utm_campaign=examples&utm_content=gradio"
 
 FREE_CURRENCY = "USD"
 

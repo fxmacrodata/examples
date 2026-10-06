@@ -1,6 +1,6 @@
 # FXMacroData × Backtrader
 
-Use [FXMacroData](https://fxmacrodata.com) as a data source inside
+Use [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=backtrader) as a data source inside
 [Backtrader](https://www.backtrader.com/) backtests.  This integration provides
 three ready-to-use `PandasData` feed classes and loader helpers for every
 public FXMacroData endpoint.
@@ -116,7 +116,7 @@ inf_prev = self.datas[1].close[-22] # reading from ~1 month ago
 | `retail_sales` | Retail Sales (MoM %) |
 | `pmi` | Manufacturing PMI |
 | `trade_balance` | Trade Balance (USD mn) |
-| …40+ more | See [full catalogue](https://fxmacrodata.com/documentation) |
+| …40+ more | See [full catalogue](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=backtrader) |
 
 ---
 
@@ -261,7 +261,7 @@ def __init__(self):
 
 ## Links
 
-- [FXMacroData](https://fxmacrodata.com)
-- [API Documentation](https://fxmacrodata.com/documentation)
+- [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=backtrader)
+- [API Documentation](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=backtrader)
 - [Get an API key](https://api.fxmacrodata.com-management)
 - [Backtrader docs](https://www.backtrader.com/docu/)

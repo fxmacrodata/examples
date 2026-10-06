@@ -131,7 +131,7 @@ current published currency coverage.
 | `breakeven_inflation_rate` | 10-year breakeven inflation |
 | `consumer_confidence` | Consumer confidence index |
 
-Full catalogue: [fxmacrodata.com/documentation](https://fxmacrodata.com/documentation)
+Full catalogue: [fxmacrodata.com/documentation](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=pandas-datareader)
 
 ---
 
@@ -269,7 +269,7 @@ Set `FXMACRODATA_API_KEY` first to also run the Pro-tier examples.
 
 ## Links
 
-- 🌐 [FXMacroData Website](https://fxmacrodata.com)
-- 📖 [API Documentation](https://fxmacrodata.com/documentation)
+- 🌐 [FXMacroData Website](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=pandas-datareader)
+- 📖 [API Documentation](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=pandas-datareader)
 - 🔑 [Get your API key](https://api.fxmacrodata.com-management)
 - 📦 [pandas-datareader](https://pandas-datareader.readthedocs.io/)

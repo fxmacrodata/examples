@@ -23,7 +23,7 @@ gunicorn app:app
 
 Every view includes a direct CTA to:
 
-- https://fxmacrodata.com/subscribe
+- https://fxmacrodata.com/subscribe?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=flask
 
 ## Key safety
 

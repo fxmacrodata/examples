@@ -257,7 +257,7 @@ def _print_signal(signal: str, icon: str, rationale: str) -> None:
     print()
     print("  Note: this is a macro scanner, not a backtested strategy.")
     print("  For full backtesting, see the Backtrader and Zipline examples.")
-    print(f"  Docs & Pro key → https://api.fxmacrodata.com-management")
+    print(f"  Docs & Pro key → https://fxmacrodata.com/api-management?utm_source=ccxt&utm_medium=integration&utm_campaign=examples&utm_content=ccxt")
     print()
 
 

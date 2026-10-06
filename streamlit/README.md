@@ -1,10 +1,10 @@
 # FXMacroData – Central Bank Rate Monitor (Streamlit)
 
 A Streamlit example app that visualizes macroeconomic indicators from the
-**[FXMacroData API](https://fxmacrodata.com)**.
+**[FXMacroData API](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit)**.
 
 > **USD announcement data is public — no API key required.**  
-> Enter a [Professional API key](https://api.fxmacrodata.com-management) in the
+> Enter an [API key](https://fxmacrodata.com/api-management?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit) in the
 > sidebar to unlock protected non-USD announcements.
 
 ---
@@ -13,9 +13,12 @@ A Streamlit example app that visualizes macroeconomic indicators from the
 
 | Tab | What it shows | API key needed? |
 |---|---|---|
-| 🇺🇸 USD Dashboard | Policy rate, inflation, GDP, unemployment, snapshot table, release timeline | No |
-| 🌍 Multi-Currency | Compare any indicator across up to 18 currencies | Yes (for non-USD) |
-| ℹ️ About | Feature overview and API links | No |
+| USD Dashboard | Latest readings, recent releases with publication times and source links, upcoming release calendar. With a key: up to 10 years of charts | No |
+| Multi-Currency | Compare policy rates, inflation and unemployment across up to 22 currencies | Yes |
+| About | Free vs paid coverage and API links | No |
+
+Without a key the API returns the most recent 90 days of USD data, delayed by
+15 minutes. A key removes both limits.
 
 ---
 
@@ -25,6 +28,10 @@ A Streamlit example app that visualizes macroeconomic indicators from the
 pip install -r requirements.txt
 streamlit run app.py
 ```
+
+The dark theme lives in `.streamlit/config.toml`. Streamlit reads it from the
+directory you launch from; Community Cloud launches from the repository root,
+so this repo keeps a copy at `/.streamlit/config.toml` as well.
 
 Open <http://localhost:8501> in your browser.
 
@@ -41,8 +48,8 @@ Open <http://localhost:8501> in your browser.
      ```toml
      FXMACRODATA_API_KEY = "your_key_here"
      ```
-   - Then read it in `app.py` with
-     `st.secrets.get("FXMACRODATA_API_KEY", "")`.
+   - The app uses it server-side for every visitor and never shows it in the
+     sidebar input. Leave it unset to run the public app keyless.
 5. Click **Deploy** — a live URL is generated automatically.
 
 ---
@@ -66,12 +73,12 @@ Open <http://localhost:8501> in your browser.
 | `GET /v1/announcements/{currency}/{indicator}` | API key | Non-USD indicator history |
 | `GET /v1/calendar/usd` | Free | Upcoming USD macro release schedule |
 
-Full API reference: <https://fxmacrodata.com/documentation>
+Full API reference: <https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit>
 
 ---
 
 ## Links
 
-- 🌐 [FXMacroData](https://fxmacrodata.com)
-- 📖 [API Docs](https://fxmacrodata.com/documentation)
-- 🔑 [Get an API key](https://api.fxmacrodata.com-management)
+- [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit)
+- [API Docs](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit)
+- [Get an API key](https://fxmacrodata.com/api-management?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=streamlit)

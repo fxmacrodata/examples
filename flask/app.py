@@ -7,8 +7,8 @@ from flask import Flask, render_template_string
 app = Flask(__name__)
 
 API_BASE = "https://api.fxmacrodata.com/v1"
-SUBSCRIBE_URL = "https://fxmacrodata.com/subscribe"
-DOCS_URL = "https://fxmacrodata.com/documentation"
+SUBSCRIBE_URL = "https://fxmacrodata.com/subscribe?utm_source=flask&utm_medium=integration&utm_campaign=examples&utm_content=flask"
+DOCS_URL = "https://fxmacrodata.com/documentation?utm_source=flask&utm_medium=integration&utm_campaign=examples&utm_content=flask"
 
 TEMPLATE = """
 <!doctype html>

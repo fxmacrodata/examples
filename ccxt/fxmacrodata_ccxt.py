@@ -48,7 +48,7 @@ API key
 FX spot rates are public, and USD announcement indicators are public.
 To unlock protected non-USD announcements, commodities, and COT data, pass
 ``apiKey`` in the config dict or set the ``FXMACRODATA_API_KEY`` environment variable.
-Get a key at https://api.fxmacrodata.com-management
+Get a key at https://fxmacrodata.com/api-management
 """
 from __future__ import annotations
 
@@ -62,9 +62,9 @@ import requests
 # ─── Constants ───────────────────────────────────────────────────────────────
 
 _API_BASE = "https://api.fxmacrodata.com/v1"
-_SITE_URL = "https://fxmacrodata.com"
-_DOCS_URL = "https://fxmacrodata.com/documentation"
-_KEYS_URL = "https://api.fxmacrodata.com-management"
+_SITE_URL = "https://fxmacrodata.com/?utm_source=ccxt&utm_medium=integration&utm_campaign=examples&utm_content=ccxt"
+_DOCS_URL = "https://fxmacrodata.com/documentation?utm_source=ccxt&utm_medium=integration&utm_campaign=examples&utm_content=ccxt"
+_KEYS_URL = "https://fxmacrodata.com/api-management?utm_source=ccxt&utm_medium=integration&utm_campaign=examples&utm_content=ccxt"
 
 # Predefined FX pairs.  All FX spot rates are free; macro indicators for
 # currencies other than USD require a Professional API key.
@@ -179,7 +179,7 @@ class fxmacrodata(ccxt.Exchange):
                     },
                     "www": _SITE_URL,
                     "doc": _DOCS_URL,
-                    "fees": "https://fxmacrodata.com/pricing",
+                    "fees": "https://fxmacrodata.com/pricing?utm_source=ccxt&utm_medium=integration&utm_campaign=examples&utm_content=ccxt",
                 },
                 "api": {},
                 "fees": {

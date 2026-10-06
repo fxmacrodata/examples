@@ -1,10 +1,10 @@
 # FXMacroData – FX Market Intelligence (Vercel / Next.js)
 
 A Next.js example app that visualises FX market data from the
-**[FXMacroData API](https://fxmacrodata.com)** — deployable to Vercel in one click.
+**[FXMacroData API](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=vercel)** — deployable to Vercel in one click.
 
 > **The calendar tab is public, while precious metals and COT require an API key.**  
-> Get paid access via [FXMacroData Subscribe](https://fxmacrodata.com/subscribe), then
+> Get paid access via [FXMacroData Subscribe](https://fxmacrodata.com/subscribe?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=vercel), then
 > manage keys in [API management](https://api.fxmacrodata.com-management).
 
 ---
@@ -80,7 +80,7 @@ on page refresh.
 | `GET /api/cot` | `GET /v1/cot/{currency}` | API key | CFTC COT positioning |
 | `GET /api/calendar` | `GET /v1/calendar/{currency}` | Free | Economic release calendar |
 
-Full API reference: <https://fxmacrodata.com/documentation>
+Full API reference: <https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=vercel>
 
 ---
 
@@ -96,7 +96,7 @@ Full API reference: <https://fxmacrodata.com/documentation>
 
 ## Links
 
-- 🌐 [FXMacroData](https://fxmacrodata.com)
-- 📖 [API Docs](https://fxmacrodata.com/documentation)
-- 💳 [Subscribe](https://fxmacrodata.com/subscribe)
+- 🌐 [FXMacroData](https://fxmacrodata.com/?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=vercel)
+- 📖 [API Docs](https://fxmacrodata.com/documentation?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=vercel)
+- 💳 [Subscribe](https://fxmacrodata.com/subscribe?utm_source=github&utm_medium=referral&utm_campaign=examples&utm_content=vercel)
 - 🔑 [Get an API key](https://api.fxmacrodata.com-management)

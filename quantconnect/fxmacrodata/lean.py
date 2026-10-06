@@ -37,7 +37,7 @@ USD announcement data is public — no key required.
     * Local LEAN:          export FXMACRODATA_API_KEY=your_key_here
 
 Full indicator catalogue: https://fxmacrodata.com/documentation
-API key management:       https://api.fxmacrodata.com-management
+API key management:       https://fxmacrodata.com/api-management
 """
 
 from __future__ import annotations
